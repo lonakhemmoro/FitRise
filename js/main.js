@@ -10,4 +10,3 @@ function login() {
   // Redirect after successful login
   window.location.href = "index.html";
 }
-//main javascript file for the web application
