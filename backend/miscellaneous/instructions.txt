@@ -1,0 +1,13 @@
+Install packages:
+cd into the backend folder and enter "npm i" into the terminal
+
+Configuring the server:
+Change the port number if you want (Line 4)
+Change password to whatever your mysql password is (Line 19)
+Change the database name if you've something different (Line 20)
+
+Start server:
+cd into the backend folder and enter "node ." into the terminal
+
+I've included the database creation file.
+I've also put in a website that'll let you quickly create dummy data for the database. It only creates it for the users, goals, daily activities, and streaks tables in the database.
