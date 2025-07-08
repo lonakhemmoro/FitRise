@@ -1,95 +1,229 @@
-import React from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitRise Overview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    header {
+      background: #fff;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #0072ce;
+    }
+    nav a {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: #1a1a1a;
+      font-weight: bold;
+    }
 
-/**
- * OverviewPage Component
- * @param {{
- *   name: string,
- *   username: string,
- *   email: string,
- *   healthInfo: { age: number, height: string, weight: string },
- *   stats: { points: number, badge: string, streak: string, lastActive: string },
- *   goals: { steps: string, water: string, sleep: string }
- * }} user
- * @param {() => void} onEditProfile
- * @param {() => void} onEditGoals
- */
-export default function OverviewPage({ user, onEditProfile, onEditGoals }) {
-  const { name, username, email, healthInfo, stats, goals } = user;
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+    .profile-header h2 {
+      margin: 0;
+      font-size: 2rem;
+      color: #0072ce;
+    }
+    .profile-header .info {
+      color: #333;
+    }
+    .profile-header button {
+      padding: 0.5rem 1rem;
+      border: 2px solid #0072ce;
+      background: transparent;
+      color: #0072ce;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .section {
+      margin-bottom: 1.5rem;
+    }
+    .section h3 {
+      margin-bottom: 0.5rem;
+      color: #0072ce;
+      font-size: 1.25rem;
+    }
+    .health-info {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 1rem 0;
+      margin: 1rem 0;
+    }
+    .health-info div {
+      flex: 1;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      padding: 1rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .card .label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .card .value {
+      font-size: 1.5rem;
+      color: #0072ce;
+      margin-top: 0.25rem;
+    }
+    .goals-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .goals-list li {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    .goals-list button {
+      float: right;
+      padding: 0.25rem 0.5rem;
+      border: 2px solid #0072ce;
+      background: transparent;
+      color: #0072ce;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FitRise</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Goals</a>
+      <a href="#">Rewards</a>
+      <a href="#">Profile</a>
+    </nav>
+  </header>
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow p-4 flex justify-between items-center">
-        <div className="text-2xl font-bold text-blue-600">FitRise</div>
-        <ul className="flex space-x-6">
-          <li className="text-gray-700 hover:text-blue-600 cursor-pointer">Home</li>
-          <li className="text-gray-700 hover:text-blue-600 cursor-pointer">Goals</li>
-          <li className="text-gray-700 hover:text-blue-600 cursor-pointer">Rewards</li>
-          <li className="text-gray-700 hover:text-blue-600 cursor-pointer">Profile</li>
-        </ul>
-      </nav>
-
-      <main className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow">
-        <header className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold text-gray-800">{name}</h1>
-            <p className="text-gray-600">@{username}</p>
-            <p className="text-gray-600">{email}</p>
-          </div>
-          <button
-            onClick={onEditProfile}
-            className="px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50"
-          >
-            Edit Profile
-          </button>
-        </header>
-
-        <section className="border-t border-b border-gray-200 py-4 flex justify-between">
-          <div>
-            <h2 className="text-lg font-medium text-gray-700">Health Info</h2>
-            <div className="mt-2 flex space-x-12">
-              <div><span className="font-semibold">Age:</span> {healthInfo.age}</div>
-              <div><span className="font-semibold">Height:</span> {healthInfo.height}</div>
-              <div><span className="font-semibold">Weight:</span> {healthInfo.weight}</div>
-            </div>
-          </div>
-        </section>
-
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 py-6">
-          <div className="p-4 border rounded text-center">
-            <h3 className="text-sm text-gray-500">Points</h3>
-            <p className="text-2xl font-bold">{stats.points}</p>
-          </div>
-          <div className="p-4 border rounded text-center">
-            <h3 className="text-sm text-gray-500">Badge</h3>
-            <p className="text-xl font-semibold">{stats.badge}</p>
-          </div>
-          <div className="p-4 border rounded text-center">
-            <h3 className="text-sm text-gray-500">Streak</h3>
-            <p className="text-2xl font-bold">{stats.streak}</p>
-          </div>
-          <div className="p-4 border rounded text-center">
-            <h3 className="text-sm text-gray-500">Last Active</h3>
-            <p className="text-xl font-semibold">{stats.lastActive}</p>
-          </div>
-        </section>
-
-        <section className="pt-4 border-t border-gray-200 flex justify-between items-start">
-          <div>
-            <h2 className="text-lg font-medium text-gray-700 mb-2">Your Current Goals</h2>
-            <ul className="list-disc list-inside space-y-1 text-gray-600">
-              <li>Steps: {goals.steps}</li>
-              <li>Water: {goals.water}</li>
-              <li>Sleep: {goals.sleep}</li>
-            </ul>
-          </div>
-          <button
-            onClick={onEditGoals}
-            className="self-start px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50"
-          >
-            Edit
-          </button>
-        </section>
-      </main>
+  <div class="container">
+    <div class="profile-header">
+      <div>
+        <h2 id="user-name">John Doe</h2>
+        <div class="info" id="user-username">@johndoe</div>
+        <div class="info" id="user-email">john@example.com</div>
+      </div>
+      <button id="edit-profile">Edit Profile</button>
     </div>
-  );
-}
+
+    <div class="section health-info">
+      <div><strong>Age:</strong> <span id="user-age">30</span></div>
+      <div><strong>Height:</strong> <span id="user-height">6'0"</span></div>
+      <div><strong>Weight:</strong> <span id="user-weight">170 lbs</span></div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="label">Points</div>
+        <div class="value" id="user-points">2,500</div>
+      </div>
+      <div class="card">
+        <div class="label">Badge</div>
+        <div class="value" id="user-badge">Streak Champion</div>
+      </div>
+      <div class="card">
+        <div class="label">Streak</div>
+        <div class="value" id="user-streak">10 days</div>
+      </div>
+      <div class="card">
+        <div class="label">Last Active</div>
+        <div class="value" id="user-last-active">April 2, 2025</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Your Current Goals <button id="edit-goals">Edit</button></h3>
+      <ul class="goals-list">
+        <li>Steps: <span id="goal-steps">10,000</span></li>
+        <li>Water: <span id="goal-water">8 cups</span></li>
+        <li>Sleep: <span id="goal-sleep">7 hrs</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+
+    const user = {
+      name: 'Example Name',
+      username: 'example username',
+      email: 'example@example.com',
+      age: 'user age',
+      height: "user height\"",
+      weight: 'user weight lbs',
+      points: 5000,
+      badge: 'example badge',
+      streak: '10 days',
+      lastActive: 'example last active date',
+      goals: {
+        steps: 'example steps',
+        water: 'example water cups',
+        sleep: 'example sleep hrs'
+      }
+    };
+
+    document.getElementById('user-name').textContent = user.name;
+    document.getElementById('user-username').textContent = `@${user.username}`;
+    document.getElementById('user-email').textContent = user.email;
+    document.getElementById('user-age').textContent = user.age;
+    document.getElementById('user-height').textContent = user.height;
+    document.getElementById('user-weight').textContent = user.weight;
+    document.getElementById('user-points').textContent = user.points.toLocaleString();
+    document.getElementById('user-badge').textContent = user.badge;
+    document.getElementById('user-streak').textContent = user.streak;
+    document.getElementById('user-last-active').textContent = user.lastActive;
+    document.getElementById('goal-steps').textContent = user.goals.steps.toLocaleString();
+    document.getElementById('goal-water').textContent = user.goals.water;
+    document.getElementById('goal-sleep').textContent = user.goals.sleep;
+
+    document.getElementById('edit-profile').addEventListener('click', () => {
+      alert('Open profile settings...');
+    });
+    document.getElementById('edit-goals').addEventListener('click', () => {
+      alert('Open goals editor...');
+    });
+  </script>
+</body>
+</html>
