@@ -35,6 +35,11 @@ function login() {
   window.location.href = "index.html";
 }
 
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
 // Add points and update dashboard
 function getStarted() {
     points += 100;
