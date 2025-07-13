@@ -1,0 +1,198 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+  /*
+  background-color: #f8f9fa;
+  */
+  background-color: #0c4b8b;
+  color: #333;
+}
+
+input:focus-visible {
+  outline: 1px solid #3a3a3a;
+}
+
+select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.container {
+  margin: 2rem auto;
+  background-color: #f8f9fa;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 30rem;
+}
+.container h2 {
+  text-align: center;
+}
+
+/*--*/
+
+.sign-up-field {
+  margin-bottom: 20px;
+}
+
+.sign-up-field input {
+  display: block;
+  width: 100%;
+  margin: 4px 0 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.sign-up-field input.err {
+  border: 2px solid #b70202;
+}
+
+.sign-up-field p.err {
+  color: #b70202;
+  margin: -6px 0px 0px 0px;
+}
+
+p.err::before {
+  content: "* ";
+}
+
+.sign-up-field button {
+  display: inline;
+  margin: 4px 0 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  width: 40px;
+  transition: background-color 0.15s ease-in;
+}
+
+.sign-up-field button:hover:enabled {
+  background-color: #c1c1c1;
+}
+
+/*Password section*/
+#password + p,
+#password + p + .err {
+  margin-top: 0px;
+}
+
+#password + p::before {
+  content: "* ";
+}
+
+/*Birthdate section*/
+#birthdate {
+  display: grid;
+  grid-template-columns: 2fr repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  margin-top: -6px;
+}
+
+#birthdate select.err {
+  border: 2px solid #b70202;
+}
+
+/*Heigth Section*/
+#height {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#height > div {
+  display: flex;
+  flex-direction: row;
+}
+
+/*Weight Section*/
+div[name="weight"] {
+  display: flex;
+  gap: 10px;
+}
+
+#weight-section + div {
+  display: flex;
+  flex-direction: row;
+}
+
+/*CTA button*/
+#cta {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  font-weight: bold;
+  font-size: 1rem;
+
+  transition: background-color 0.1s ease-in;
+}
+
+#cta:hover {
+  background-color: #004794;
+}
+
+#cta:disabled {
+  background-color: #bbbbbb;
+  color: #989898;
+}
+
+/*error modal*/
+
+.err-container {
+  position: fixed;
+  bottom: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.err-container.closed {
+  display: none;
+}
+
+.err-modal {
+  border: 2px solid #da0c0c;
+  border-radius: 12px;
+  background-color: #c70303;
+  padding: 5px;
+  height: max-content;
+  width: 50%;
+
+  position: relative;
+}
+
+.err-modal p {
+  color: white;
+  font-weight: 700;
+  text-align: center;
+}
+
+.err-modal button {
+  position: absolute;
+  right: 8px;
+  top: 0px;
+
+  border: none;
+  background: none;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.3rem;
+  cursor: pointer;
+  margin: 0px;
+  padding: 0px;
+}
