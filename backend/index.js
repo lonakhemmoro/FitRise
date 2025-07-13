@@ -40,6 +40,7 @@ const { createRefreshCookie } = require("./funcs/createRefreshCookie.js");
 app.use("/auth", require("./routes/auth"));
 app.use("/users/me", require("./routes/users-me"));
 app.use("/users/:userID", require("./routes/users-id"));
+app.use("/users", require("./routes/users"));
 app.use("/debug", require("./routes/debug"));
 
 app.get("/rewards", async (req, res) => {
