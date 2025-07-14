@@ -169,9 +169,16 @@ async function createAccount() {
       weight,
     }),
   });
-  const request = await fetch(req).catch((err) =>
-    displayErrModal("Server could not be reached. Please try again later.")
-  );
+  const request = await fetch(req).catch((err) => {
+    displayErrModal("Server could not be reached. Please try again later.");
+    return { status: undefined };
+  });
+
+  if (!request.status) {
+    createButton.disabled = false;
+    return;
+  }
+
   if (request.status === 409) {
     const responseBody = await request.json();
     if (responseBody.err.code === "EMAIL_CONFLICT") {

@@ -196,3 +196,49 @@ div[name="weight"] {
   margin: 0px;
   padding: 0px;
 }
+
+/*Responsive-----*/
+@media (width <=700px) {
+  .err-container {
+    top: 5px;
+    bottom: revert;
+  }
+
+  .err-modal {
+    padding-top: 10px;
+    height: max-content;
+    width: 95%;
+  }
+
+  .err-modal button {
+    right: 8px;
+    top: 0px;
+
+    font-size: 1.3rem;
+
+    margin: 0px;
+    padding: 0px;
+  }
+}
+
+/* CSS specific to iOS devices */
+@supports (-webkit-touch-callout: none) {
+  select {
+    /*
+    -webkit-appearance: auto;
+    */
+    height: 35px;
+    color: black;
+  }
+
+  button {
+    color: #fff;
+    background-color: #007bff;
+  }
+
+  button:disabled {
+    border-color: #e8e8e8;
+    background-color: #f8f9fa;
+    color: #858585;
+  }
+}
