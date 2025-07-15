@@ -179,17 +179,13 @@ async function createAccount() {
     return;
   }
 
-  if (request.status === 409) {
-    const responseBody = await request.json();
-    if (responseBody.err.code === "EMAIL_CONFLICT") {
-      displayErrBorder(emailInput);
-      displayErrTag(emailInput, "Given email already has an account");
-    } else if (responseBody.err.code === "USERNAME_CONFLICT") {
-      displayErrBorder(usernameInput);
-      displayErrTag(usernameInput, "Account with username already exists");
+  if (request.status === 400) {
+    const response = await request.json();
+    if (response.title.toLowerCase() === "field errors")
+      serverFeedbackDisplay(response.errorFields);
+    else {
+      displayErrModal("Request body error");
     }
-  } else if (request.status === 400) {
-    displayErrModal("TODO: 400 Error");
   } else if (request.status === 500) {
     displayErrModal("Internal server error. Please try again later.");
   }
@@ -259,6 +255,7 @@ function clientValidate(
   //TODO: Lastname
 
   //Height
+  /*
   if (height <= 0 || Number.isNaN(height)) {
     isValid = false;
     const heightDiv = document.getElementById("height-section");
@@ -269,6 +266,19 @@ function clientValidate(
       displayErrBorder(document.getElementById("height-feet"));
       displayErrBorder(document.getElementById("height-inch"));
     }
+    displayErrTag(heightDiv.parentElement, "Please provide a valid height");
+  }
+    */
+  if (height <= 0 || Number.isNaN(height)) {
+    isValid = false;
+    const heightDiv = document.getElementById("height-section");
+    try {
+      displayErrBorder(document.getElementById("height-cm"));
+    } catch (err) {}
+    try {
+      displayErrBorder(document.getElementById("height-feet"));
+      displayErrBorder(document.getElementById("height-inch"));
+    } catch (err) {}
     displayErrTag(heightDiv.parentElement, "Please provide a valid height");
   }
 
@@ -284,31 +294,76 @@ function clientValidate(
   }
 
   //Birthday
-  let bdErr = false;
-  if (Number.isNaN(bdMonth)) {
-    bdErr = true;
-    let monthSelect = document.getElementById("bd-months");
-    displayErrBorder(monthSelect);
-  }
-  if (Number.isNaN(bdDays)) {
-    bdErr = true;
-    let daySelect = document.getElementById("bd-days");
-    displayErrBorder(daySelect);
-  }
-  if (Number.isNaN(bdYears)) {
-    bdErr = true;
-    let yearSelect = document.getElementById("bd-years");
-    displayErrBorder(yearSelect);
-  }
-  if (bdErr) {
+  if (Number.isNaN(bdMonth) || Number.isNaN(bdDays) || Number.isNaN(bdYears)) {
     isValid = false;
-
+    displayErrBorder(document.getElementById("bd-months"));
+    displayErrBorder(document.getElementById("bd-days"));
+    displayErrBorder(document.getElementById("bd-years"));
     displayErrTag(birthdateDiv, "Please provide a valid date");
   }
 
   return isValid;
 }
 
+/**
+ * Display errors
+ * @param {Array} serverResponseArray
+ */
+function serverFeedbackDisplay(serverResponseArray) {
+  serverResponseArray.forEach((element) => {
+    const field = element.field.toLowerCase();
+    if (field === "email") {
+      if (element.details.toLowerCase() === "email_invalid") {
+        displayErrBorder(emailInput);
+        displayErrTag(emailInput, "Please provide a valid email");
+      } else if (element.details.toLowerCase() === "email_conflict") {
+        displayErrBorder(emailInput);
+        displayErrTag(emailInput, "An account with this email already exists");
+      }
+    }
+
+    if (field === "password") {
+      displayErrBorder(passwordInput);
+      displayErrBorder(passwordInput.nextElementSibling);
+    }
+
+    if (field === "birthdate") {
+      displayErrBorder(monthSelect);
+      displayErrBorder(daySelect);
+      displayErrBorder(yearSelect);
+      displayErrTag(birthdateDiv, "Please provide a valid date");
+    }
+
+    if (field === "weight") {
+      displayErrBorder(weightInput);
+      displayErrTag(
+        document.getElementById("weight"),
+        "Please provide a valid weight"
+      );
+    }
+
+    if (field === "height") {
+      displayErrBorder(document.getElementById("height-cm"));
+      displayErrBorder(document.getElementById("height-feet"));
+      displayErrBorder(document.getElementById("height-inch"));
+      const heightDiv = document.getElementById("height-section");
+      displayErrTag(heightDiv.parentElement, "Please provide a valid height");
+    }
+
+    if (field === "username") {
+      if (element.details.toLowerCase() === "username_invalid") {
+        displayErrBorder(usernameInput);
+        displayErrTag(usernameInput, "Please provide a valid username");
+      } else if (element.details.toLowerCase() === "username_conflict") {
+        displayErrBorder(usernameInput);
+        displayErrTag(
+          usernameInput,
+          "Account with this username already exists"
+        );
+      }
+    }
+  });
+}
 //#region Error Visuals
 
 /**
