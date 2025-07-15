@@ -5,9 +5,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { pool } = require("./dbPool");
-const encryptToken = require("./funcs/encryptToken");
-const decryptToken = require("./funcs/decryptToken");
-//const jwt = require("jsonwebtoken");
+const globalErrorHandler = require("./middleware/globalErrorHandler");
 
 const app = express();
 app.use(
@@ -21,20 +19,6 @@ app.use(cookieParser(process.env.COOKIE_PARSER_KEY));
 
 const PORT = 8080;
 app.listen(PORT, () => console.log(`API active on http://localhost:${PORT}`));
-
-//#region first-party imports
-/*
-const { pool } = require("./dbPool.js");
-const { authenticateToken } = require("./middlewares/authenticateToken.js");
-const { createRandomString } = require("./funcs/createRandomString.js");
-const { encryptToken } = require("./funcs/encryptToken.js");
-const { createCtxCookie } = require("./funcs/createCtxCookie.js");
-const { generateAccessToken } = require("./funcs/generateAccessToken.js");
-const { generateRefreshToken } = require("./funcs/generateRefreshToken.js");
-const { createRefreshCookie } = require("./funcs/createRefreshCookie.js");
-*/
-//#endregion
-
 //#endregion
 
 app.use("/auth", require("./routes/auth"));
@@ -52,3 +36,6 @@ app.get("/rewards", async (req, res) => {
       res.sendStatus(500);
     });
 });
+
+//Global Error handling middleware
+app.use(globalErrorHandler);

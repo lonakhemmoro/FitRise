@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const { pool } = require("../dbPool");
-/*
-const generateAccessToken = require("../funcs/generateAccessToken");
-const generateRefreshToken = require("../funcs/generateRefreshToken");
-const createRefreshCookie = require("../funcs/createRefreshCookie");
-const createCtxCookie = require("../funcs/createCtxCookie");
-*/
+const CustomError = require("../utils/customError");
 
 //#region /
-router.post("/", async (req, res) => {
-  if (!req.body) return res.sendStatus(400);
+router.post("/", async (req, res, next) => {
+  if (!req.body) {
+    const err = new CustomError(400, "Missing request body", "");
+    next(err);
+    return;
+  }
 
   const {
     email,
@@ -24,48 +23,63 @@ router.post("/", async (req, res) => {
   } = req.body;
 
   if (!email || !password || !username || !birthdate || !height || !weight) {
-    return res.sendStatus(400);
-  }
-
-  //Email validation
-  const regexp = /\w*@\w*\.\w+/;
-  if (email.indexOf(" ") != -1 || !regexp.test(email)) {
-    return res.sendStatus(400);
-  }
-
-  const emailResults = await pool
-    .query("SELECT email FROM users WHERE email = ?", [email])
-    .then((rows) => rows[0])
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-  if (emailResults.status === 500) {
+    const err = new CustomError(400, "Missing required fields", "");
+    next(err);
     return;
   }
 
-  if (emailResults.length > 0) {
-    return res.status(409).send({ err: { code: "EMAIL_CONFLICT" } });
+  let errorFields = registrationValidation(
+    email,
+    password,
+    birthdate,
+    height,
+    weight
+  );
+
+  if (errorFields.length === 0 || errorFields[0].field !== "email") {
+    const emailResults = await pool
+      .query("SELECT email FROM users WHERE email = ?", [email])
+      .then((rows) => rows[0])
+      .catch((err) => new CustomError(500, "", "", err));
+
+    if (emailResults.status) {
+      next(emailResults);
+      return;
+    }
+
+    if (emailResults.length > 0) {
+      errorFields.push({ field: "email", details: "email_conflict" });
+    }
   }
 
   //Username validation
-  const usernameResults = await pool
-    .query("SELECT username FROM users WHERE username = ?", [username])
-    .then((rows) => rows[0])
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-  if (usernameResults.status === 500) {
+
+  if (username.indexOf(" ") === -1 && username.length > 0) {
+    const usernameResults = await pool
+      .query("SELECT username FROM users WHERE username = ?", [username])
+      .then((rows) => rows[0])
+      .catch((err) => new CustomError(500, "", "", err));
+    if (usernameResults.status) {
+      next(usernameResults);
+      return;
+    }
+
+    if (usernameResults.length > 0) {
+      errorFields.push({ field: "username", details: "username_conflict" });
+    }
+  } else {
+    errorFields.push({ field: "username", details: "username_invalid" });
+  }
+
+  //Send errors
+  if (errorFields.length > 0) {
+    const err = new CustomError(400, "Field errors", "");
+    err.setErrors(errorFields);
+    next(err);
     return;
   }
 
-  if (usernameResults.length > 0) {
-    return res.status(409).send({ err: { code: "USERNAME_CONFLICT" } });
-  }
-
-  let isValid = registrationValidation(password, birthdate, height, weight);
-  if (!isValid) return res.sendStatus(400);
+  //Register the user
 
   //TODO: bcrypt hash the password
 
@@ -86,133 +100,48 @@ router.post("/", async (req, res) => {
         lastName,
       ]
     )
-    .catch((err) => {
-      console.log(err);
-      return res.sendStatus(500);
-    });
-  if (register.status === 500) return;
+    .catch((err) => new CustomError(500, "", "", err));
+  if (register.status === 500) {
+    next(err);
+    return;
+  }
 
   return res.sendStatus(201);
 });
 
 /**
- * Validates registration-related fields and returns 400 an invalid is found
- * @returns (bool) false if any are invalid
+ * @param {*} email
+ * @param {*} password
+ * @param {*} birthdate
+ * @param {*} height
+ * @param {*} weight
+ * @returns {Array} An array of error fields and details
  */
-function registrationValidation(password, birthdate, height, weight) {
+function registrationValidation(email, password, birthdate, height, weight) {
+  let arr = [];
+
+  const regexp = /\w*@\w*\.\w+/;
+  if (email.indexOf(" ") != -1 || !regexp.test(email)) {
+    arr.push({ field: "email", details: "email_invalid" });
+  }
+
   if (password.trim().length < 8) {
-    return false;
+    arr.push({ field: "password", details: "password_length_below_8" });
   }
 
   let testBirthdate = new Date(birthdate);
   if (!testBirthdate instanceof Date || isNaN(testBirthdate.valueOf())) {
-    return false;
+    arr.push({ field: "birthdate", details: "date_invalid " });
   }
 
-  if (Number.isNaN(weight) || Number.isNaN(height)) return false;
-  if (weight < 0 || height < 0) return false;
+  if (Number.isNaN(weight) || weight < 0) {
+    arr.push({ field: "weight", details: "number_invalid" });
+  }
+  if (Number.isNaN(height) || height < 0) {
+    arr.push({ field: "height", details: "number_invalid" });
+  }
 
-  return true;
+  return arr;
 }
-
-function pee() {
-  const str = "2025-05-32";
-  const date = new Date(str);
-  console.log(date);
-}
-pee();
-/*
-function clientValidate(
-  email,
-  password,
-  username,
-  firstName,
-  lastName,
-  height,
-  weight,
-  bdMonth,
-  bdDays,
-  bdYears
-) {
-  let isValid = true;
-  //Email
-  const regexp = /\w*@\w*\.\w+/;
-  if (email.indexOf(" ") != -1 || !regexp.test(email)) {
-    isValid = false;
-    //console.log("email fail");
-    displayErrBorder(emailInput);
-    displayErrTag(emailInput, "Please provide a valid email");
-  }
-
-  //Password
-  if (password.length < 8) {
-    isValid = false;
-    //console.log("password fail");
-    displayErrBorder(passwordInput);
-    displayErrBorder(passwordInput.nextElementSibling);
-  }
-
-  //Username
-  if (username.indexOf(" ") != -1 || username.length === 0) {
-    isValid = false;
-    //console.log("username fail");
-    displayErrBorder(usernameInput);
-    displayErrTag(usernameInput, "Please provide a valid username");
-  }
-
-  //TODO: Firstname
-  //TODO: Lastname
-
-  //Height
-  if (height <= 0 || Number.isNaN(height)) {
-    isValid = false;
-    const heightDiv = document.getElementById("height-section");
-    let metricEnabled = heightDiv.children.lenght === 1;
-    if (metricEnabled) {
-      displayErrBorder(document.getElementById("height-cm"));
-    } else {
-      displayErrBorder(document.getElementById("height-feet"));
-      displayErrBorder(document.getElementById("height-inch"));
-    }
-    displayErrTag(heightDiv.parentElement, "Please provide a valid height");
-  }
-
-  //Weight
-  if (weight <= 0 || Number.isNaN(weight)) {
-    isValid = false;
-
-    displayErrBorder(weightInput);
-    displayErrTag(
-      document.getElementById("weight"),
-      "Please provide a valid weight"
-    );
-  }
-
-  //Birthday
-  let bdErr = false;
-  if (Number.isNaN(bdMonth)) {
-    bdErr = true;
-    let monthSelect = document.getElementById("bd-months");
-    displayErrBorder(monthSelect);
-  }
-  if (Number.isNaN(bdDays)) {
-    bdErr = true;
-    let daySelect = document.getElementById("bd-days");
-    displayErrBorder(daySelect);
-  }
-  if (Number.isNaN(bdYears)) {
-    bdErr = true;
-    let yearSelect = document.getElementById("bd-years");
-    displayErrBorder(yearSelect);
-  }
-  if (bdErr) {
-    isValid = false;
-
-    displayErrTag(birthdateDiv, "Please provide a valid date");
-  }
-
-  return isValid;
-}
-  */
 
 module.exports = router;
