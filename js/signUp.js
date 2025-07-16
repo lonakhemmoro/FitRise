@@ -118,7 +118,7 @@ async function createAccount() {
     let inches = parseFloat(document.getElementById("height-inch").value);
     height = ftToCm(feet, inches);
   } else {
-    height = parseFloat(document.getElementById("height-cm"));
+    height = parseFloat(document.getElementById("height-cm").value);
   }
 
   //Convert weight to kg
@@ -255,20 +255,6 @@ function clientValidate(
   //TODO: Lastname
 
   //Height
-  /*
-  if (height <= 0 || Number.isNaN(height)) {
-    isValid = false;
-    const heightDiv = document.getElementById("height-section");
-    let metricEnabled = heightDiv.children.lenght === 1;
-    if (metricEnabled) {
-      displayErrBorder(document.getElementById("height-cm"));
-    } else {
-      displayErrBorder(document.getElementById("height-feet"));
-      displayErrBorder(document.getElementById("height-inch"));
-    }
-    displayErrTag(heightDiv.parentElement, "Please provide a valid height");
-  }
-    */
   if (height <= 0 || Number.isNaN(height)) {
     isValid = false;
     const heightDiv = document.getElementById("height-section");
