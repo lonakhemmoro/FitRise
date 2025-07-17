@@ -11,27 +11,31 @@ const generateAccessToken = require("../funcs/generateAccessToken");
 const generateRefreshToken = require("../funcs/generateRefreshToken");
 const decryptToken = require("../funcs/decryptToken");
 const createRefreshCookie = require("../funcs/createRefreshCookie");
+const CustomError = require("../utils/customError");
+const onPoolFailed = require("../funcs/onPoolFailed");
 
-router.post("/login", async (req, res) => {
-  //TODO: Login
+router.post("/login", async (req, res, next) => {
   if (!req.body || !req.body.email || !req.body.password) {
-    return res.sendStatus(400);
+    next(new CustomError(400, "Missing body fields", ""));
+    return;
   }
   const { email, password } = req.body;
 
   const results = await pool
     .query("SELECT id, username, password FROM users WHERE email = ?", [email])
     .then((rows) => rows[0])
-    .catch((err) => {
-      console.log(err);
-      return res.sendStatus(500);
-    });
-
-  if (results.status === 500) return;
-  if (results.length === 0) return res.sendStatus(404);
+    .catch((err) => new CustomError(500, "", "", err));
+  if (onPoolFailed(results, next)) return;
+  if (results.length === 0) {
+    next(new CustomError(404, "User not found", ""));
+    return;
+  }
 
   //TODO: bcrypt hash the password
-  if (password !== results[0].password) return res.sendStatus(404);
+  if (password !== results[0].password) {
+    next(new CustomError(404, "User not found", ""));
+    return;
+  }
 
   //----Create the access token
   const ctx = createRandomString();

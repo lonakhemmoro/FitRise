@@ -2,18 +2,23 @@ const jwt = require("jsonwebtoken");
 const autoRefreshToken = require("../funcs/autoRefreshToken");
 const decryptToken = require("../funcs/decryptToken");
 const { createHash } = require("crypto");
+const CustomError = require("../utils/customError");
 
 //TODO: turn this back on
 /*
 async function authenticateToken(req, res, next) {
   if (!req.cookies || !req.cookies.ctx) {
-    return res.sendStatus(401);
+  next (new CustomError(401, "", ""));
+    return;
   }
 
   const authHeader = req.headers["authorization"];
   //The && means if we've an authHeader then split it, otherwise return undefined
   let token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.sendStatus(401);
+  if (token == null) {
+  next (new CustomError(401, "", ""));
+    return;
+  }
 
   //console.log(token);
   token = decryptToken(token);
@@ -22,8 +27,8 @@ async function authenticateToken(req, res, next) {
   const tokenDecoded = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
   const hash = createHash("sha512").update(req.cookies.ctx).digest("hex");
   if (hash !== tokenDecoded.ctx) {
-    console.log("00");
-    return res.sendStatus(401);
+  next (new CustomError(401, "", ""));
+    return;
   }
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
@@ -36,10 +41,12 @@ async function authenticateToken(req, res, next) {
         console.log("RefreshSuccessful?: ", refreshResult);
 
         if (!refreshResult) {
-          return res.sendStatus(401);
+          next (new CustomError(401, "", ""));
+    return;
         }
       } else {
-        return res.sendStatus(401);
+        next (new CustomError(401, "", ""));
+    return;
       }
     }
 

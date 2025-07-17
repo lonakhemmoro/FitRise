@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { pool } = require("./dbPool");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
+//const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(
@@ -19,6 +20,7 @@ app.use(cookieParser(process.env.COOKIE_PARSER_KEY));
 
 const PORT = 8080;
 app.listen(PORT, () => console.log(`API active on http://localhost:${PORT}`));
+
 //#endregion
 
 app.use("/auth", require("./routes/auth"));

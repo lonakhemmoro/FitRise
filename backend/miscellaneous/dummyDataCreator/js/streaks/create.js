@@ -3,7 +3,7 @@ import { serverPort } from "../exports/serverport.js";
 
 const nav = document.getElementById("header-space");
 
-const goalTypeInput = document.getElementById("goal-id");
+//const goalTypeInput = document.getElementById("goal-id");
 const userIDInput = document.getElementById("user-id");
 const streakValueInput = document.getElementById("streak");
 
@@ -19,7 +19,7 @@ async function createStreak() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       userID: userIDInput.value,
-      goalTypeID: goalTypeInput.value,
+      //goalTypeID: goalTypeInput.value,
       value: streakValueInput.value,
     }),
   }).then((res) => {

@@ -2,10 +2,22 @@ const express = require("express");
 const router = express.Router();
 const authenticateToken = require("../middleware/authenticateToken");
 const { pool } = require("../dbPool");
+const CustomError = require("../utils/customError");
+const onPoolFailed = require("../funcs/onPoolFailed");
 
+function isParamNaN(paramField, fieldName, next) {
+  if (Number.isNaN(paramField)) {
+    const err = new CustomError(
+      400,
+      "Parameter field " + fieldName + " is not a number"
+    );
+    next(err);
+    return true;
+  } else false;
+}
 //#region /
 
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   await pool
@@ -17,10 +29,9 @@ router.get("/", authenticateToken, async (req, res) => {
       `,
       [userID]
     )
-    .then((rows) => res.status(200).send(rows[0]))
+    .then((rows) => res.status(200).send(rows[0][0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
@@ -31,29 +42,33 @@ router.patch("/", authenticateToken, async (req, res, next) => {
 //#endregion
 
 //#region daily-activities
-router.get("/daily-activities/today", authenticateToken, async (req, res) => {
-  const { id: userID } = req.user;
+router.get(
+  "/daily-activities/today",
+  authenticateToken,
+  async (req, res, next) => {
+    const { id: userID } = req.user;
 
-  await pool
-    .query(
-      `SELECT da.*, g.value as 'goalValue' FROM daily_activity da
+    await pool
+      .query(
+        `SELECT da.*, g.value as 'goalValue' FROM daily_activity da
       JOIN goals g ON da.goalID = g.id
       WHERE da.userID = ? AND da.date = CURDATE()`,
-      [userID]
-    )
-    .then((rows) => res.send(rows[0]))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-});
+        [userID]
+      )
+      .then((rows) => res.send(rows[0]))
+      .catch((err) => {
+        next(new CustomError(500, "", "", err));
+      });
+  }
+);
 
 router.get(
   "/daily-activities/:goalTypeID",
   authenticateToken,
-  async (req, res) => {
+  async (req, res, next) => {
     const { id: userID } = req.user;
     const { goalTypeID } = req.params;
+    if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
 
     await pool
       .query(
@@ -66,8 +81,7 @@ router.get(
       )
       .then((rows) => res.send(rows[0]))
       .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
+        next(new CustomError(500, "", "", err));
       });
   }
 );
@@ -75,9 +89,10 @@ router.get(
 router.get(
   "/daily-activities/:goalTypeID/today",
   authenticateToken,
-  async (req, res) => {
+  async (req, res, next) => {
     const { id: userID } = req.user;
     const { goalTypeID } = req.params;
+    if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
 
     await pool
       .query(
@@ -87,10 +102,9 @@ router.get(
         WHERE da.userID = ? AND da.date = CURDATE() AND da.goalTypeID = ?`,
         [userID, goalTypeID]
       )
-      .then((rows) => res.send(rows[0]))
+      .then((rows) => res.send(rows[0][0]))
       .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
+        next(new CustomError(500, "", "", err));
       });
   }
 );
@@ -98,10 +112,15 @@ router.get(
 router.post(
   "/daily-activities/:goalTypeID",
   authenticateToken,
-  async (req, res) => {
+  async (req, res, next) => {
     const { id: userID } = req.user;
     const { goalTypeID } = req.params;
-    if (!req.body || !req.body.value) return res.sendStatus(400);
+    if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
+
+    if (!req.body || !req.body.value) {
+      next(new CustomError(400, "Missing body fields", ""));
+      return;
+    }
     const { value } = req.body;
 
     await pool
@@ -114,8 +133,7 @@ router.post(
       )
       .then(() => res.sendStatus(201))
       .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
+        next(new CustomError(500, "", "", err));
       });
   }
 );
@@ -123,10 +141,15 @@ router.post(
 router.patch(
   "/daily-activities/:goalTypeID",
   authenticateToken,
-  async (req, res) => {
+  async (req, res, next) => {
     const { id: userID } = req.user;
     const { goalTypeID } = req.params;
-    if (!req.body || !req.body.value) return res.sendStatus(400);
+    if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
+
+    if (!req.body || !req.body.value) {
+      next(new CustomError(400, "Missing body fields", ""));
+      return;
+    }
     const { value } = req.body;
 
     await pool
@@ -138,118 +161,135 @@ router.patch(
       )
       .then(() => res.sendStatus(200))
       .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
+        next(new CustomError(500, "", "", err));
       });
   }
 );
 //#endregion
 
 //#region streaks
-router.get("/streaks", authenticateToken, async (req, res) => {
+router.get("/streaks", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   await pool
-    .query("SELECT goalTypeID, value FROM streaks WHERE userID = ?", [userID])
-    .then((rows) => res.send(rows[0]))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
-    });
+    .query("SELECT value, lastUpdated FROM streaks WHERE userID = ?", [userID])
+    .then((rows) => res.send(rows[0][0]))
+    .catch((err) => next(new CustomError(500, "", "", err)));
 });
 
-router.get("/streaks/:goalTypeID", authenticateToken, async (req, res) => {
+router.patch("/streaks", authenticateToken, async (req, res, next) => {
+  //Automatically determines and updates the user's streak
   const { id: userID } = req.user;
-  const { goalTypeID } = req.params;
 
-  await pool
-    .query(
-      "SELECT goalTypeID, value FROM streaks WHERE userID = ? AND goalTypeID = ?",
-      [userID, goalTypeID]
-    )
-    .then((rows) => {
-      res.send(rows[0]);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
-    });
+  try {
+    const streakCheck = await pool
+      .query(`SELECT * FROM streaks WHERE userID = ?`, [userID])
+      .then((rows) => rows[0])
+      .catch((err) => {
+        throw new CustomError(500, "", "", err);
+      });
+
+    //If no streak entry exists, make one
+    if (streakCheck.length === 0) {
+      await pool
+        .query(`INSERT INTO streaks VALUES (?, 0, CURDATE())`, [userID])
+        .catch((err) => {
+          throw new CustomError(500, "", "", err);
+        });
+      return res.sendStatus(200);
+    }
+
+    //else update the user's row
+    await pool
+      .query(
+        `
+      UPDATE streaks
+      SET value = 
+      CASE
+        WHEN lastUpdated = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN value + 1
+        WHEN lastUpdated = CURDATE() THEN value
+        ELSE 0
+        END,
+      lastUpdated = CURDATE()
+      WHERE userID = ?`,
+        [userID]
+      )
+      .then(() => res.sendStatus(200))
+      .catch((err) => {
+        throw new CustomError(500, "", "", err);
+      });
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.post("/streaks/:goalTypeID", authenticateToken, async (req, res) => {
-  const { id: userID } = req.user;
-  const { goalTypeID } = req.params;
-
-  await pool
-    .query("INSERT INTO streaks VALUES (?, ?, 0)", [userID, goalTypeID])
-    .then(() => res.sendStatus(201))
-    .catch((err) => res.status(500).send(err));
-});
-
-router.patch("/streaks/:goalTypeID", authenticateToken, async (req, res) => {
-  //Increases a user's streak by 1
-  const { id: userID } = req.user;
-  const { goalTypeID } = req.params;
-
-  await pool
-    .query(
-      "UPDATE streaks SET value = value + 1 WHERE userID = ? AND goalTypeID = ?",
-      [userID, goalTypeID]
-    )
-    .then(() => res.sendStatus(200))
-    .catch((err) => res.status(500).send(err));
-});
 //#endregion
 
 //#region points
-router.get("/points", authenticateToken, async (req, res) => {
+router.get("/points", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   await pool
-    .query(
-      `
-      SELECT SUM(r.points) + u.extraPoints as totalPoints, COUNT(ur.userID) as rewardCount
-        FROM user_rewards ur
-        JOIN rewards r ON ur.rewardID = r.id
-        JOIN users u ON ur.userID = u.id
-        WHERE ur.userID = ?
-      `,
-      [userID]
-    )
-    .then((rows) => res.status(200).send(rows[0]))
+    .query("SELECT points FROM users WHERE id = ?", [userID])
+    .then((rows) => res.status(200).send(rows[0][0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-//Gives the user extra points separate from any rewards they've gained
 router.patch("/points", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
-  if (!req.body || !req.body.points) return res.sendStatus(400);
+  if (!req.body || !req.body.points) {
+    next(new CustomError(400, "No body or no 'points' field", ""));
+    return;
+  }
   const { points } = req.body;
 
-  await pool
-    .query(
-      `
-      UPDATE users
-      SET extraPoints = extraPoints + ?
-      WHERE id = ?
-      
+  try {
+    //Get the users points
+    const { points: oldPoints } = await pool
+      .query("SELECT points FROM users WHERE id = ?", [userID])
+      .then((rows) => rows[0][0])
+      .catch((err) => {
+        throw new CustomError(500, "", "", err);
+      });
+
+    //TODO: Remove this when we make points in the db NON-NULL
+    if (!oldPoints)
+      throw new CustomError(500, "points is NULL or undefined", "");
+
+    //Give the user their new points
+    await pool
+      .query("UPDATE users SET points = points + ? WHERE id = ?", [
+        points,
+        userID,
+      ])
+      .catch((err) => {
+        throw new CustomError(500, "", "", err);
+      });
+
+    //Give the user any rewards the point increase may have given them
+    await pool
+      .query(
+        `
+      INSERT INTO user_rewards
+      SELECT ?, id, curdate() FROM rewards WHERE points > ? AND points <= ?
       `,
-      [points, userID]
-    )
-    .then(() => res.sendStatus(200))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
+        [userID, oldPoints, oldPoints + points]
+      )
+      .then(() => res.sendStatus(200))
+      .catch((err) => {
+        throw new CustomError(500, "", "", err);
+      });
+  } catch (err) {
+    next(err);
+  }
 });
 //#endregion
 
 //#region Friends
-router.get("/friends", authenticateToken, async (req, res) => {
+router.get("/friends", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   await pool
@@ -264,47 +304,48 @@ router.get("/friends", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.status(200).send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.post("/friends", authenticateToken, async (req, res) => {
+router.post("/friends", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   if (!req.body || !req.body.friendID) return res.sendStatus(400);
   const { friendID } = req.body;
 
-  await pool
-    .query(
-      `
+  try {
+    await pool
+      .query(
+        `
     INSERT INTO friends
     VALUES (?,?)`,
-      [friendID, userID]
-    )
-    .then(() => {
-      res.sendStatus(201);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
+        [friendID, userID]
+      )
+      .then(() => {
+        res.sendStatus(201);
+      })
+      .catch((err) => {
+        throw new CustomError(500, "", "", err);
+      });
 
-  //Delete from friends request table
-  await pool
-    .query(
-      `
+    //Delete from friends request table
+    await pool
+      .query(
+        `
       DELETE FROM friend_requests
       WHERE userID = ? AND receiverID = ?`,
-      [friendID, userID]
-    )
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
+        [friendID, userID]
+      )
+      .catch((err) => {
+        throw new CustomError(500, "", "", err);
+      });
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.delete("/friends", authenticateToken, async (req, res) => {
+router.delete("/friends", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   if (!req.body || !req.body.friendID) return res.sendStatus(400);
@@ -318,14 +359,13 @@ router.delete("/friends", authenticateToken, async (req, res) => {
     )
     .then(() => res.sendStatus(200))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 //#endregion
 
 //#region FriendRequests
-router.get("/friend-requests", authenticateToken, async (req, res) => {
+router.get("/friend-requests", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   //TODO: Make it return both inbound and outbound
@@ -344,12 +384,11 @@ router.get("/friend-requests", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.status(200).send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.post("/friend-requests", authenticateToken, async (req, res) => {
+router.post("/friend-requests", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   if (!req.body || !req.body.receiverID) return res.sendStatus(400);
@@ -369,12 +408,11 @@ router.post("/friend-requests", authenticateToken, async (req, res) => {
     )
     .then(() => res.sendStatus(201))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.delete("/friend-requests", authenticateToken, async (req, res) => {
+router.delete("/friend-requests", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   if (!req.body || !req.body.receiverID) return res.sendStatus(400);
@@ -390,15 +428,14 @@ router.delete("/friend-requests", authenticateToken, async (req, res) => {
     )
     .then(() => res.sendStatus(200))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
 //#endregion
 
 //#region Rewards
-router.get("/rewards", authenticateToken, async (req, res) => {
+router.get("/rewards", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   await pool
@@ -413,50 +450,14 @@ router.get("/rewards", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.status(200).send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.post("/rewards", authenticateToken, async (req, res) => {
-  const { id: userID } = req.user;
-
-  if (!req.body) return res.sendStatus(400);
-
-  //Determine whether to use the rewardID or rewardName
-  //If both are availalble, uses the rewardID
-  let queryString = ``;
-  let value;
-  if (!req.body.rewardID) {
-    if (!req.body.rewardName) {
-      return res.sendStatus(400);
-    } else {
-      queryString = `
-      INSERT INTO user_rewards
-      VALUES (?, (SELECT id FROM rewards WHERE name = ? LIMIT 1), CURDATE());
-      `;
-      value = req.body.rewardName;
-    }
-  } else {
-    queryString = `
-    INSERT INTO user_rewards
-    VALUES (?, ?, CURDATE())
-    `;
-    value = req.body.rewardID;
-  }
-
-  await pool
-    .query(queryString, [userID, value])
-    .then(() => res.sendStatus(201))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-});
 //#endregion
 
 //#region Goals
-router.get("/goals", authenticateToken, async (req, res) => {
+router.get("/goals", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
 
   await pool
@@ -471,15 +472,14 @@ router.get("/goals", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.get("/goals/:goalTypeID", authenticateToken, async (req, res) => {
+router.get("/goals/:goalTypeID", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
   const { goalTypeID } = req.params;
-  //TODO: try to break the params
+  if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
 
   await pool
     .query(
@@ -490,76 +490,132 @@ router.get("/goals/:goalTypeID", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.get("/goals/:goalTypeID/latest", authenticateToken, async (req, res) => {
-  const { id: userID } = req.user;
-  const { goalTypeID } = req.params;
+router.get(
+  "/goals/:goalTypeID/latest",
+  authenticateToken,
+  async (req, res, next) => {
+    const { id: userID } = req.user;
+    const { goalTypeID } = req.params;
+    if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
 
-  await pool
-    .query(
-      `SELECT * FROM goals 
+    await pool
+      .query(
+        `SELECT * FROM goals 
       WHERE userID = ? AND goalTypeID = ? 
       ORDER BY date desc 
       LIMIT 1`,
-      [userID, goalTypeID]
-    )
-    .then((rows) => res.status(200).send(rows[0]))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
-    });
-});
+        [userID, goalTypeID]
+      )
+      .then((rows) => res.status(200).send(rows[0][0]))
+      .catch((err) => {
+        next(new CustomError(500, "", "", err));
+      });
+  }
+);
 
-router.post("/goals/:goalTypeID", authenticateToken, async (req, res) => {
+router.post("/goals/:goalTypeID", authenticateToken, async (req, res, next) => {
   const { id: userID } = req.user;
   const { goalTypeID } = req.params;
+  if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
 
-  if (!req.body || !req.body.value) {
-    return res.sendStatus(400);
+  if (!req.body || !req.body.value || !req.body.adjustedBy) {
+    next(new CustomError(400, "Missing body fields", ""));
+    return;
   }
-  const { value } = req.body;
+  const { value, adjustedBy } = req.body;
 
   /*TODO: Change it from setting the date to today. 
   I don't know what to change it to; I must ponder on it*/
   await pool
     .query(
       `INSERT INTO goals 
-      VALUES (DEFAULT, ?, ?, CURDATE(), ?, 'Active')`,
-      [userID, goalTypeID, value]
+      VALUES (DEFAULT, ?, ?, CURDATE(), ?, 'Active', ?)`,
+      [userID, goalTypeID, value, adjustedBy]
     )
     .then(() => res.sendStatus(201))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
+    .catch((err) => new CustomError(500, "", "", err));
+  if (onPoolFailed(pool, next)) return;
 });
 
-router.patch("/goals/:goalTypeID", authenticateToken, async (req, res) => {
-  const { id: userID } = req.user;
-  const { goalTypeID } = req.params;
+router.patch(
+  "/goals/:goalTypeID",
+  authenticateToken,
+  async (req, res, next) => {
+    const { id: userID } = req.user;
+    const { goalTypeID } = req.params;
+    if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
 
-  if (!req.body || !req.body.status) return res.sendStatus(400);
-  const { status: goalStatus } = req.body;
+    try {
+      //Get the results of the previous goal
+      const previousGoal = await pool
+        .query(
+          `
+        SELECT SUM(da.value) as 'sum', g.value as 'goalValue', da.goalID, g.status 
+        FROM daily_activity da JOIN goals g ON da.goalID = g.id
+        WHERE goalID = 
+        (SELECT goalID FROM daily_activity WHERE userID = ? AND goalTypeID = ? ORDER BY date DESC LIMIT 1) 
+        GROUP BY(goalID)`,
+          [userID, goalTypeID]
+        )
+        .then((rows) => rows[0])
+        .catch((err) => {
+          throw new CustomError(500, "", "", err);
+        });
 
-  await pool
-    .query(
-      `UPDATE goals
-      SET status = ?
-      WHERE userID = ? AND goalTypeID = ? 
-      ORDER BY date DESC
-      LIMIT 1`,
-      [goalStatus, userID, goalTypeID]
-    )
-    .then(() => res.sendStatus(200))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-});
+      if (previousGoal.length === 0) {
+        //Only occurs if the user doesn't have ANY previous goals for this goalType
+        //console.log("we are here");
+        return res.sendStatus(200);
+      }
+
+      const {
+        sum,
+        goalValue,
+        goalID,
+        status: previousGoalStatus,
+      } = previousGoal[0];
+
+      if (previousGoalStatus !== "Active") {
+        return res.sendStatus(200);
+      }
+
+      //Update it
+      const updatedStatus = sum >= goalValue * 4 ? "Complete" : "Fail";
+      await pool
+        .query("UPDATE goals SET status = ? WHERE id = ?", [
+          updatedStatus,
+          goalID,
+        ])
+        .then(() => res.sendStatus(200))
+        .catch((err) => {
+          throw new CustomError(500, "", "", err);
+        });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.get(
+  "/goals/:goalTypeID/recommended-value",
+  authenticateToken,
+  async (req, res, next) => {
+    const { id: userID } = req.user;
+    const { goalTypeID } = req.params;
+    if (isParamNaN(goalTypeID, "goalTypeID", next)) return;
+
+    /*It's okay to get the last created goal 
+      because the newest goal won't be created yet at the time of requesting this*/
+
+    //TODO: Should also return the adjustedBy amount so it can be used
+    //        by POST /users/me/goals/:goalTypeID
+    return res.send({ msg: "this is just a placeholder" });
+  }
+);
 //#endregion
 
 module.exports = router;

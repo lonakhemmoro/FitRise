@@ -2,11 +2,35 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 const authenticateToken = require("../middleware/authenticateToken");
 const { pool } = require("../dbPool");
+const CustomError = require("../utils/customError");
 
+function paramValidate(paramField, fieldName, next) {
+  if (!paramField) {
+    const err = new CustomError(
+      400,
+      "No " + fieldName + " parameter in endpoint url",
+      ""
+    );
+    next(err);
+    return true;
+  }
+
+  if (Number.isNaN(paramField)) {
+    const err = new CustomError(
+      400,
+      "Parameter field " + fieldName + " is not a number"
+    );
+    next(err);
+    return true;
+  }
+
+  return false;
+}
 //#region /
 
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", authenticateToken, async (req, res, next) => {
   const { userID } = req.params;
+  if (paramValidate(userID, "userID", next)) return;
 
   await pool
     .query(
@@ -17,37 +41,42 @@ router.get("/", authenticateToken, async (req, res) => {
       `,
       [userID]
     )
-    .then((rows) => res.status(200).send(rows[0]))
+    .then((rows) => res.status(200).send(rows[0][0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 //#endregion
 
 //#region daily-activities
-router.get("/daily-activities/today", authenticateToken, async (req, res) => {
-  const { userID } = req.params;
+router.get(
+  "/daily-activities/today",
+  authenticateToken,
+  async (req, res, next) => {
+    const { userID } = req.params;
+    if (paramValidate(userID, "userID", next)) return;
 
-  await pool
-    .query(
-      `SELECT da.*, g.value as 'goalValue' FROM daily_activity da
+    await pool
+      .query(
+        `SELECT da.*, g.value as 'goalValue' FROM daily_activity da
       JOIN goals g ON da.goalID = g.id
       WHERE da.userID = ? AND da.date = CURDATE()`,
-      [userID]
-    )
-    .then((rows) => res.send(rows[0]))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-});
+        [userID]
+      )
+      .then((rows) => res.send(rows[0]))
+      .catch((err) => {
+        next(new CustomError(500, "", "", err));
+      });
+  }
+);
 
 router.get(
   "/daily-activities/:goalTypeID",
   authenticateToken,
-  async (req, res) => {
+  async (req, res, next) => {
     const { userID, goalTypeID } = req.params;
+    if (paramValidate(userID, "userID", next)) return;
+    if (paramValidate(goalTypeID, "goalTypeID", next)) return;
 
     await pool
       .query(
@@ -60,8 +89,7 @@ router.get(
       )
       .then((rows) => res.send(rows[0]))
       .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
+        next(new CustomError(500, "", "", err));
       });
   }
 );
@@ -69,8 +97,10 @@ router.get(
 router.get(
   "/daily-activities/:goalTypeID/today",
   authenticateToken,
-  async (req, res) => {
+  async (req, res, next) => {
     const { userID, goalTypeID } = req.params;
+    if (paramValidate(userID, "userID", next)) return;
+    if (paramValidate(goalTypeID, "goalTypeID", next)) return;
 
     await pool
       .query(
@@ -80,10 +110,9 @@ router.get(
         WHERE da.userID = ? AND da.date = CURDATE() AND da.goalTypeID = ?`,
         [userID, goalTypeID]
       )
-      .then((rows) => res.send(rows[0]))
+      .then((rows) => res.send(rows[0][0]))
       .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
+        next(new CustomError(500, "", "", err));
       });
   }
 );
@@ -91,64 +120,37 @@ router.get(
 //#endregion
 
 //#region streaks
-router.get("/streaks", authenticateToken, async (req, res) => {
+router.get("/streaks", authenticateToken, async (req, res, next) => {
   const { userID } = req.params;
+  if (paramValidate(userID, "userID", next)) return;
 
   await pool
-    .query("SELECT goalTypeID, value FROM streaks WHERE userID = ?", [userID])
-    .then((rows) => res.send(rows[0]))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
-    });
-});
-
-router.get("/streaks/:goalTypeID", authenticateToken, async (req, res) => {
-  const { userID, goalTypeID } = req.params;
-
-  await pool
-    .query(
-      "SELECT goalTypeID, value FROM streaks WHERE userID = ? AND goalTypeID = ?",
-      [userID, goalTypeID]
-    )
-    .then((rows) => {
-      res.send(rows[0]);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
-    });
+    .query("SELECT value, lastUpdated FROM streaks WHERE userID = ?", [userID])
+    .then((rows) => res.send(rows[0][0]))
+    .catch((err) => next(new CustomError(500, "", "", err)));
 });
 
 //#endregion
 
 //#region points
-router.get("/points", authenticateToken, async (req, res) => {
+router.get("/points", authenticateToken, async (req, res, next) => {
   const { userID } = req.params;
+  if (paramValidate(userID, "userID", next)) return;
 
   await pool
-    .query(
-      `
-      SELECT SUM(r.points) + u.extraPoints as totalPoints, COUNT(ur.userID) as rewardCount
-        FROM user_rewards ur
-        JOIN rewards r ON ur.rewardID = r.id
-        JOIN users u ON ur.userID = u.id
-        WHERE ur.userID = ?
-      `,
-      [userID]
-    )
-    .then((rows) => res.status(200).send(rows[0]))
+    .query("SELECT points FROM users WHERE id = ?", [userID])
+    .then((rows) => res.status(200).send(rows[0][0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
 //#endregion
 
 //#region Friends
-router.get("/friends", authenticateToken, async (req, res) => {
+router.get("/friends", authenticateToken, async (req, res, next) => {
   const { userID } = req.params;
+  if (paramValidate(userID, "userID", next)) return;
 
   await pool
     .query(
@@ -162,16 +164,16 @@ router.get("/friends", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.status(200).send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
 //#endregion
 
 //#region Rewards
-router.get("/rewards", authenticateToken, async (req, res) => {
+router.get("/rewards", authenticateToken, async (req, res, next) => {
   const { userID } = req.params;
+  if (paramValidate(userID, "userID", next)) return;
 
   await pool
     .query(
@@ -185,16 +187,16 @@ router.get("/rewards", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.status(200).send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      next(new CustomError(500, "", "", err));
     });
 });
 
 //#endregion
 
 //#region Goals
-router.get("/goals", authenticateToken, async (req, res) => {
+router.get("/goals", authenticateToken, async (req, res, next) => {
   const { userID } = req.params;
+  if (paramValidate(userID, "userID", next)) return;
 
   await pool
     .query(
@@ -208,15 +210,14 @@ router.get("/goals", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.get("/goals/:goalTypeID", authenticateToken, async (req, res) => {
+router.get("/goals/:goalTypeID", authenticateToken, async (req, res, next) => {
   const { userID, goalTypeID } = req.params;
-
-  //TODO: try to break the params
+  if (paramValidate(userID, "userID", next)) return;
+  if (paramValidate(goalTypeID, "goalTypeID", next)) return;
 
   await pool
     .query(
@@ -227,28 +228,32 @@ router.get("/goals/:goalTypeID", authenticateToken, async (req, res) => {
     )
     .then((rows) => res.send(rows[0]))
     .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
+      next(new CustomError(500, "", "", err));
     });
 });
 
-router.get("/goals/:goalTypeID/latest", authenticateToken, async (req, res) => {
-  const { userID, goalTypeID } = req.params;
+router.get(
+  "/goals/:goalTypeID/latest",
+  authenticateToken,
+  async (req, res, next) => {
+    const { userID, goalTypeID } = req.params;
+    if (paramValidate(userID, "userID", next)) return;
+    if (paramValidate(goalTypeID, "goalTypeID", next)) return;
 
-  await pool
-    .query(
-      `SELECT * FROM goals 
+    await pool
+      .query(
+        `SELECT * FROM goals 
       WHERE userID = ? AND goalTypeID = ? 
       ORDER BY date desc 
       LIMIT 1`,
-      [userID, goalTypeID]
-    )
-    .then((rows) => res.status(200).send(rows[0]))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
-    });
-});
+        [userID, goalTypeID]
+      )
+      .then((rows) => res.status(200).send(rows[0][0]))
+      .catch((err) => {
+        next(new CustomError(500, "", "", err));
+      });
+  }
+);
 
 //#endregion
 

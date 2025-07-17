@@ -6,16 +6,13 @@ const { pool } = require("../dbPool");
 router.post("/dailyactivity", async (req, res) => {
   const { goalArr, userID, goalTypeID } = req.body;
   if (!userID) return res.sendStatus(400);
-  //console.log(goalArr);
 
   let errOccured = false;
 
   for (let i = 0; i < goalArr.length; i++) {
     const element = goalArr[i];
-    //console.log(element.daily);
 
-    const goalQuery = `(DEFAULT, ${userID}, ${goalTypeID}, '${element.goal.date}', ${element.goal.value}, '${element.goal.status}')`;
-    //console.log(goalQuery);
+    const goalQuery = `(DEFAULT, ${userID}, ${goalTypeID}, '${element.goal.date}', ${element.goal.value}, '${element.goal.status}', 0)`;
 
     let dailyQuery = "";
     const subquery = `SELECT id FROM goals WHERE userID = ${userID} AND goalTypeID = ${goalTypeID} ORDER BY id DESC LIMIT 1`;
@@ -86,7 +83,7 @@ router.patch("/users/:userID", async (req, res) => {
   stringQuery += updateAdder(gender, "gender", arr2);
   stringQuery += updateAdder(weight, "weight", arr2);
   stringQuery += updateAdder(height, "height", arr2);
-  stringQuery += updateAdder(points, "extraPoints", arr2);
+  stringQuery += updateAdder(points, "points", arr2);
   stringQuery += updateAdder(fname, "fname", arr2);
   stringQuery += updateAdder(lname, "lname", arr2);
   stringQuery = stringQuery.substring(0, stringQuery.lastIndexOf(","));
@@ -124,24 +121,21 @@ router.post("/users", async (req, res) => {
     lname,
   } = req.body;
 
-  //TODO: Validate all these fields
-
   /*Because we're still in the debug phase, 
   I don't care if any of these fields are null*/
+
   const arr = [
     email,
     password,
     username,
+    fname,
+    lname,
     birthdate,
     gender,
     weight,
     height,
     points,
-    fname,
-    lname,
   ];
-
-  //console.log(arr);
 
   await pool
     .query(
@@ -154,22 +148,20 @@ router.post("/users", async (req, res) => {
       console.log(err);
       res.status(500).send({ error: err });
     });
-
-  //TODO: Return the userID as a cookie
 });
 //#endregion
 
 //#region Streaks
-router.get("/streaks/:userID/:goalTypeID", async (req, res) => {
-  const { userID, goalTypeID } = req.params;
+router.get("/streaks/:userID", async (req, res) => {
+  const { userID } = req.params;
 
   await pool
     .query(
       `
       SELECT * FROM streaks
-      WHERE userID = ? AND goalTypeID = ?
+      WHERE userID = ? 
       `,
-      [userID, goalTypeID]
+      [userID]
     )
     .then((rows) => res.status(200).send(rows[0]))
     .catch((err) => {
@@ -185,8 +177,8 @@ router.post("/streaks", async (req, res) => {
     .query(
       `
     INSERT INTO streaks 
-    VALUES (?, ?, ?)`,
-      [userID, goalTypeID, value]
+    VALUES (?, ?, CURDATE())`,
+      [userID, value]
     )
     .then(() => {
       res.sendStatus(201);
@@ -203,9 +195,9 @@ router.patch("/streaks", async (req, res) => {
     .query(
       `
     UPDATE streaks 
-    SET value = ?
-    WHERE userID = ? AND goalTypeID = ?`,
-      [value, userID, goalTypeID]
+    SET value = ?, lastUpdated = CURDATE()
+    WHERE userID = ?`,
+      [value, userID]
     )
     .then(() => {
       res.sendStatus(200);
