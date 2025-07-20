@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FitRise Login</title>
     <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/err_style.css" />
+    <script src="/js/login.js" type="module" defer></script>
   </head>
   <body>
     <!-- Change to the most recent navbar version for this-->
@@ -25,12 +27,17 @@
             required
           />
         </form>
-        <button onclick="login()">Login</button>
+        <button>Login</button>
+      </div>
+    </div>
+
+    <div class="err-container closed">
+      <div class="err-modal">
+        <p>Unknown server error. Please try again later</p>
+        <button>X</button>
       </div>
     </div>
 
     <footer>&copy; 2025 FitRise</footer>
-
-    <script src="js/login.js" defer></script>
   </body>
 </html>

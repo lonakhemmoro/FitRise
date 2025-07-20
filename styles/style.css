@@ -1,15 +1,12 @@
 /* styles for the entire application */
-* {
+body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
 
-body {
   font-family: "Arial", sans-serif;
   background-color: #f8f9fa;
   color: #333;
-  /*padding-top: 80px;*/
 }
 
 /* Header */
