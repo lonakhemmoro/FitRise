@@ -45,18 +45,18 @@ async function login() {
   const regexp = /\w*@\w*\.\w+/;
   if (email.length === 0) {
     displayErrBorder(emailInput, true);
-    displayErrTag_Login(emailInput, "Please provide your email");
+    displayErrTag(emailInput, "Please provide your email");
     return;
   } else if (email.indexOf(" ") != -1 || !regexp.test(email)) {
     displayErrBorder(emailInput, true);
-    displayErrTag_Login(emailInput, "Please provide a valid email");
+    displayErrTag(emailInput, "Please provide a valid email");
     return;
   }
 
   //Validate password
   if (password.length === 0) {
     displayErrBorder(passwordInput, true);
-    displayErrTag_Login(passwordInput, "Please provide your password");
+    displayErrTag(passwordInput, "Please provide your password");
     return;
   }
 
@@ -99,19 +99,6 @@ async function login() {
   }
 
   loginButton.disabled = false;
-}
-
-/**
- * Assumes the inputTag is in .login-box
- * @param {*} inputTag
- * @param {*} message
- */
-function displayErrTag_Login(inputTag, message) {
-  const errTag = document.createElement("p");
-  errTag.classList.add("err");
-  errTag.innerText = message;
-
-  inputTag.insertAdjacentElement("afterend", errTag);
 }
 
 document.querySelector(".err-modal button").onclick = () => closeErrModal();
