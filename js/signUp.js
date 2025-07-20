@@ -1,5 +1,10 @@
 import { BASE_URL } from "./modules/baseUrl.js";
 import { ftToCm, lbsToKg } from "./modules/unitConversions.js";
+import displayErrTag from "./modules/errors/displayErrTag.js";
+import displayErrBorder from "./modules/errors/displayErrBorder.js";
+import removeAllErrDisplays from "./modules/errors/removeAllErrDisplays.js";
+import displayErrModal from "./modules/errors/displayErrModal.js";
+import closeErrModal from "./modules/errors/closeErrModal.js";
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -350,76 +355,6 @@ function serverFeedbackDisplay(serverResponseArray) {
     }
   });
 }
-//#region Error Visuals
 
-/**
- * Only to be used with children of 'sign-up-field' divs.
- * Displays an error tag underneath a 'sign-up-field' class element
- * @param {*} tag Child tag of the 'sign-up-field' to make an error for
- * @param {*} str What you want the error to display
- */
-function displayErrTag(tag, str) {
-  const parent = tag.parentNode;
-  const errTag = document.createElement("p");
-  errTag.classList.add("err");
-  errTag.innerText = str;
-  parent.appendChild(errTag);
-}
-
-/**
- * Displays the error red border around the given element
- * @param {*} tag
- * @param {*} enabled (bool) enable or disable the border
- */
-function displayErrBorder(tag, enabled = true) {
-  if (enabled) {
-    tag.classList.add("err");
-  } else {
-    tag.classList.remove("err");
-  }
-}
-
-/**
- * Only to be used with children of 'sign-up-field' divs.
- * Remove an error tag on a 'sign-up-field' class element
- * @param {*} tag Child tag of the 'sign-up-field' to remove the error for
- */
-function removeErrTag(tag) {
-  const parent = tag.parentNode;
-  const errTag = parent.lastElementChild;
-  if (errTag.classList.contains("err")) {
-    parent.removeChild(errTag);
-  }
-}
-
-function removeAllErrDisplays() {
-  document.querySelector("#password + p").classList.remove("err");
-  document.querySelectorAll("p.err").forEach((element) => element.remove());
-
-  const errTags = document.getElementsByClassName("err");
-  Array.from(errTags).forEach((element) => {
-    displayErrBorder(element, false);
-  });
-}
-
-/**
- * Displays the bottom viewport error modal
- * @param {string} str The string the modal should display
- */
-function displayErrModal(str) {
-  const errContainer = document.querySelector(".err-container");
-  const pTag = errContainer.querySelector(".err-modal p");
-  pTag.innerText = str;
-
-  errContainer.classList.remove("closed");
-}
-
-function closeErrModal() {
-  const errContainer = document.querySelector(".err-container");
-  //console.log(errContainer);
-  errContainer.classList.add("closed");
-}
 const errModalBtn = document.querySelector(".err-modal button");
 errModalBtn.onclick = () => closeErrModal();
-
-//#endregion

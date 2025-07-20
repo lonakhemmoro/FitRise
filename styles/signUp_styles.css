@@ -3,9 +3,6 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: "Arial", sans-serif;
-  /*
-  background-color: #f8f9fa;
-  */
   background-color: #0c4b8b;
   color: #333;
 }
@@ -49,6 +46,7 @@ select {
   border-radius: 4px;
 }
 
+/*
 .sign-up-field input.err {
   border: 2px solid #b70202;
 }
@@ -61,6 +59,7 @@ select {
 p.err::before {
   content: "* ";
 }
+  */
 
 .sign-up-field button {
   display: inline;
@@ -98,9 +97,11 @@ p.err::before {
   margin-top: -6px;
 }
 
+/*
 #birthdate select.err {
   border: 2px solid #b70202;
 }
+  */
 
 /*Heigth Section*/
 #height {
@@ -152,6 +153,8 @@ div[name="weight"] {
 
 /*error modal*/
 
+/*
+
 .err-container {
   position: fixed;
   bottom: 5px;
@@ -198,6 +201,7 @@ div[name="weight"] {
 }
 
 /*Responsive-----*/
+/*
 @media (width <=700px) {
   .err-container {
     top: 5px;
