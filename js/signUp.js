@@ -156,6 +156,7 @@ async function createAccount() {
 
   createButton.disabled = true;
 
+  /*TODO: Turn back on
   const req = new Request(BASE_URL + "/users", {
     method: "POST",
     mode: "cors",
@@ -210,6 +211,11 @@ async function createAccount() {
 
     window.location.href = "index.html";
   }
+    */
+
+  //TODO: Remove after turning backend back on
+  localStorage.setItem("loggedIn", "true");
+  window.location.href = "index.html";
 
   createButton.disabled = false;
 }
