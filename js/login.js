@@ -60,6 +60,7 @@ async function login() {
     return;
   }
 
+  /* TODO: Turn back on
   //Login
   const requstOptions = new Request(BASE_URL + "/auth/login", {
     method: "POST",
@@ -97,7 +98,10 @@ async function login() {
     window.location.href = "index.html";
     return;
   }
+    */
 
+  localStorage.setItem("loggedIn", "true");
+  window.location.href = "index.html";
   loginButton.disabled = false;
 }
 
