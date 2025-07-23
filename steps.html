@@ -2,93 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Steps - FitRise</title>
   <link rel="stylesheet" href="styles/style.css">
-  <style>
-    .dashboard {
-      max-width: 1200px;
-      margin: 40px auto;
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .card {
-      flex: 1 1 45%;
-      min-width: 350px;
-      background-color: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-    }
-    .add-steps input {
-      width: 80px;
-      margin-right: 10px;
-    }
-    .goal-box {
-      margin-top: 10px;
-      padding: 10px;
-      background: #f8f9fa;
-      border-left: 4px solid #007bff;
-      border-radius: 6px;
-    }
-    header .logo {
-      font-size: 22px;
-      color: white;
-      font-weight: bold;
-    }
-    header nav ul li a {
-      font-weight: 600;
-    }
-  </style>
 </head>
 <body>
-<header>
-  <div class="logo">
-    <img src="logo.png" alt="FitRise logo" style="height:30px; vertical-align:middle;"> FitRise
-  </div>
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="rewards.html">Rewards</a></li>
-    </ul>
-  </nav>
-  <button id="logoutBtn" onclick="logout()">Logout</button>
-</header>
+    <div id="header-placeholder"></div>
 
-<main class="dashboard">
-  <div class="card">
-    <h2 style="color:#007bff">🏃 Step Goal</h2>
-    <p><strong>Current Goal:</strong> 8,000 steps</p>
-    <p><strong>Today's Steps:</strong> <span id="stepsCount">500</span></p>
-    <div class="add-steps">
-      <input type="number" id="stepInput" value="2000">
-      <button onclick="updateSteps()">Add Steps</button>
+  <main class="dashboard">
+    <div class="card">
+      <h2>🏃 Step Goal</h2>
+      <p>Current Goal: 8,000 steps</p>
+      <p>Today's Steps: <span id="stepsCount">0</span></p>
+      <button onclick="updateSteps()">Update Steps</button>
     </div>
-  </div>
-
-  <div class="card">
-    <h3 style="font-weight:bold">Goal: July 1 - July 4</h3>
-    <div class="goal-box">July 1<br>1200 / 8000 steps</div>
-    <div class="goal-box">July 2<br>0 / 8000 steps</div>
-    <div class="goal-box">July 3 Today<br>0 / 8000 steps</div>
-  </div>
-</main>
-
-<script>
-function logout() {
-  // Clear session or cookies if needed
-  // Redirect to login page
-  window.location.href = "login.html";
-}
-</script>
-<script src="js/main.js"></script>
-<script src="js/goals.js"></script>
+  </main>
+  <script src="js/main.js"></script>
+  <script src="js/goals.js"></script>
 </body>
 </html>
+
