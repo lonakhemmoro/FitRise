@@ -1,7 +1,6 @@
 <header>
   <div class="logo"><img src="images/fitrise.png" alt="FitRise Logo" />
     FitRise</div>
-  <div class="header-container">
     <a href="index.html" class="logo-link">
     </a>
     <nav class="main-nav">
@@ -9,20 +8,8 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="goals.html">Goals</a></li>
         <li><a href="rewards.html">Rewards</a></li>
-        <li><a href="#">Profile</a></li>
+        <li><a href="profile.html">Profile</a></li>
       </ul>
     </nav>
-  </div>
     <button id="logoutBtn" onclick="logout()">Logout</button>
 </header>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const profileBtn = document.getElementById('profile-btn');
-    if (profileBtn) {
-      profileBtn.addEventListener('click', () => {
-        window.location.href = 'overview.html#profile-section';
-      });
-    }
-  });
-</script>
