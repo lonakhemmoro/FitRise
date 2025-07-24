@@ -230,3 +230,100 @@ progress::-webkit-progress-value {
     color: #777;
     background-color: #f1f1f1;
   }
+
+/* profile css */
+.container {
+  padding: 40px 20px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.profile-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #0072ce;
+}
+.profile-header .info {
+  color: #333;
+}
+.profile-header button {
+  padding: 0.5rem 1rem;
+  border: 2px solid #0072ce;
+  background: transparent;
+  color: #0072ce;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.section {
+  margin-bottom: 1.5rem;
+}
+.section h3 {
+  margin-bottom: 0.5rem;
+  color: #0072ce;
+  font-size: 1.25rem;
+}
+.health-info {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 1rem 0;
+  margin: 1rem 0;
+}
+.health-info div {
+  flex: 1;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+}
+.card .label {
+  font-size: 0.9rem;
+  color: #666;
+}
+.card .value {
+  font-size: 1.5rem;
+  color: #0072ce;
+  margin-top: 0.25rem;
+}
+.goals-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.goals-list li {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.goals-list button {
+  float: right;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid #0072ce;
+  background: transparent;
+  color: #0072ce;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+/* end of profile css */
