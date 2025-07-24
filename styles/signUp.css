@@ -5,6 +5,10 @@ body {
   font-family: "Arial", sans-serif;
   background-color: #0c4b8b;
   color: #333;
+
+  --header-blue: #007bff;
+  --modal-blue: #0d3f74;
+  --error-red: #c70303;
 }
 
 input:focus-visible {
@@ -46,21 +50,6 @@ select {
   border-radius: 4px;
 }
 
-/*
-.sign-up-field input.err {
-  border: 2px solid #b70202;
-}
-
-.sign-up-field p.err {
-  color: #b70202;
-  margin: -6px 0px 0px 0px;
-}
-
-p.err::before {
-  content: "* ";
-}
-  */
-
 .sign-up-field button {
   display: inline;
   margin: 4px 0 10px;
@@ -97,13 +86,7 @@ p.err::before {
   margin-top: -6px;
 }
 
-/*
-#birthdate select.err {
-  border: 2px solid #b70202;
-}
-  */
-
-/*Heigth Section*/
+/*Height Section*/
 #height {
   display: flex;
   flex-direction: row;
@@ -151,80 +134,6 @@ div[name="weight"] {
   color: #989898;
 }
 
-/*error modal*/
-
-/*
-
-.err-container {
-  position: fixed;
-  bottom: 5px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.err-container.closed {
-  display: none;
-}
-
-.err-modal {
-  border: 2px solid #da0c0c;
-  border-radius: 12px;
-  background-color: #c70303;
-  padding: 5px;
-  height: max-content;
-  width: 50%;
-
-  position: relative;
-}
-
-.err-modal p {
-  color: white;
-  font-weight: 700;
-  text-align: center;
-}
-
-.err-modal button {
-  position: absolute;
-  right: 8px;
-  top: 0px;
-
-  border: none;
-  background: none;
-  color: #fff;
-  font-weight: 900;
-  font-size: 1.3rem;
-  cursor: pointer;
-  margin: 0px;
-  padding: 0px;
-}
-
-/*Responsive-----*/
-/*
-@media (width <=700px) {
-  .err-container {
-    top: 5px;
-    bottom: revert;
-  }
-
-  .err-modal {
-    padding-top: 10px;
-    height: max-content;
-    width: 95%;
-  }
-
-  .err-modal button {
-    right: 8px;
-    top: 0px;
-
-    font-size: 1.3rem;
-
-    margin: 0px;
-    padding: 0px;
-  }
-}
-
 /* CSS specific to iOS devices */
 @supports (-webkit-touch-callout: none) {
   select {
@@ -247,7 +156,6 @@ div[name="weight"] {
   }
 }
 
-/*Error related specific to this page*/
 /* Error Related */
 input.err {
   border-color: var(--error-red);
