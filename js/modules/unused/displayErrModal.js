@@ -1,3 +1,6 @@
+/*We made a new displayErrModal like function. But keep this for now.
+  It might be useful later*/
+
 /**
  * Displays the bottom viewport error modal
  * @param {string} str The string the modal should display

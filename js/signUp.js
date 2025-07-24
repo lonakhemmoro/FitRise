@@ -1,10 +1,9 @@
 import { BASE_URL } from "./modules/baseUrl.js";
 import { ftToCm, lbsToKg } from "./modules/unitConversions.js";
-import displayErrTag from "./modules/errors/displayErrTag.js";
-import displayErrBorder from "./modules/errors/displayErrBorder.js";
-import removeAllErrDisplays from "./modules/errors/removeAllErrDisplays.js";
-import displayErrModal from "./modules/errors/displayErrModal.js";
-import closeErrModal from "./modules/errors/closeErrModal.js";
+import displayErrTag from "./modules/feedback/displayErrTag.js";
+import displayErrBorder from "./modules/feedback/displayErrBorder.js";
+import removeAllErrDisplays from "./modules/feedback/removeAllErrDisplays.js";
+import createModal from "./modules/feedback/createModal.js";
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -104,6 +103,7 @@ function weightAlter(isPoundEnabled) {
 
 createButton.onclick = () => createAccount();
 async function createAccount() {
+  document.querySelector("#password + p").classList.remove("err");
   removeAllErrDisplays();
 
   let email = emailInput.value.trim();
@@ -361,6 +361,3 @@ function serverFeedbackDisplay(serverResponseArray) {
     }
   });
 }
-
-const errModalBtn = document.querySelector(".err-modal button");
-errModalBtn.onclick = () => closeErrModal();
