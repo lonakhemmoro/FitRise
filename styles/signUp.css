@@ -1,0 +1,181 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+  background-color: #0c4b8b;
+  color: #333;
+
+  --header-blue: #007bff;
+  --modal-blue: #0d3f74;
+  --error-red: #c70303;
+}
+
+input:focus-visible {
+  outline: 1px solid #3a3a3a;
+}
+
+select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.container {
+  margin: 2rem auto;
+  background-color: #f8f9fa;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 30rem;
+}
+.container h2 {
+  text-align: center;
+}
+
+/*--*/
+
+.sign-up-field {
+  margin-bottom: 20px;
+}
+
+.sign-up-field input {
+  display: block;
+  width: 100%;
+  margin: 4px 0 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.sign-up-field button {
+  display: inline;
+  margin: 4px 0 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  width: 40px;
+  transition: background-color 0.15s ease-in;
+}
+
+.sign-up-field button:hover:enabled {
+  background-color: #c1c1c1;
+}
+
+/*Password section*/
+#password + p,
+#password + p + .err {
+  margin-top: 0px;
+}
+
+#password + p::before {
+  content: "* ";
+}
+
+/*Birthdate section*/
+#birthdate {
+  display: grid;
+  grid-template-columns: 2fr repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  margin-top: -6px;
+}
+
+/*Height Section*/
+#height {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#height > div {
+  display: flex;
+  flex-direction: row;
+}
+
+/*Weight Section*/
+#weight {
+  display: flex;
+  gap: 10px;
+}
+
+#weight-section + div {
+  display: flex;
+  flex-direction: row;
+}
+
+/*CTA button*/
+#cta {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--header-blue);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  font-weight: bold;
+  font-size: 1rem;
+
+  transition: background-color 0.1s ease-in;
+}
+
+#cta:hover {
+  background-color: #004794;
+}
+
+#cta:disabled {
+  background-color: #bbbbbb;
+  color: #989898;
+}
+
+/* CSS specific to iOS devices */
+@supports (-webkit-touch-callout: none) {
+  select {
+    /*
+    -webkit-appearance: auto;
+    */
+    height: 35px;
+    color: black;
+  }
+
+  button {
+    color: #fff;
+    background-color: #007bff;
+  }
+
+  button:disabled {
+    border-color: #e8e8e8;
+    background-color: #f8f9fa;
+    color: #858585;
+  }
+}
+
+/* Error Related */
+input.err {
+  border-color: var(--error-red);
+  border-width: 2px;
+}
+
+p.err {
+  color: var(--error-red);
+  margin: -6px 0px 0px 0px;
+}
+
+select.err {
+  border: 2px solid var(--error-red);
+}
+
+p.err {
+  margin: -6px 0px 0px 0px;
+  text-align: justify;
+}
+
+p.err::before {
+  content: "* ";
+}

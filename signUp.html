@@ -1,0 +1,123 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Join FitRise</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/signUp.css" />
+    <link rel="stylesheet" href="/styles/modal.css" />
+    <script src="/js/signUp.js" type="module" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Create your FitRise account</h2>
+
+      <form action="">
+        <div class="sign-up-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Email" />
+
+          <!--
+        <p class="err">Please provide your email</p>
+      -->
+        </div>
+        <div class="sign-up-field">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+          />
+          <p>Password should be at least 8 characters</p>
+        </div>
+        <div class="sign-up-field">
+          <label for="username">Username</label>
+          <input id="username" name="username" placeholder="Username" />
+        </div>
+        <div class="sign-up-field">
+          <label for="first-name">First Name</label>
+          <input id="first-name" name="first-name" placeholder="First Name" />
+        </div>
+        <div class="sign-up-field">
+          <label for="last-name">Last Name</label>
+          <input id="last-name" name="last-name" placeholder="Last Name" />
+        </div>
+
+        <div class="sign-up-field">
+          <label for="birthdate">Birthdate</label>
+          <div id="birthdate">
+            <select name="months" id="bd-months">
+              <option disabled selected>Month</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+            <select name="days" id="bd-days">
+              <option disabled selected>Day</option>
+            </select>
+            <select name="year" id="bd-years">
+              <option disabled selected>Year</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sign-up-field">
+          <label for="height">Height</label>
+          <div id="height">
+            <div id="height-section">
+              <input
+                type="number"
+                id="height-feet"
+                name="height-feet"
+                placeholder="Feet"
+                min="1"
+              />
+              <input
+                type="number"
+                id="height-inch"
+                name="height-inch"
+                placeholder="Inches"
+                min="1"
+              />
+            </div>
+            <div>
+              <button type="button" id="height-feet-btn" disabled>ft</button>
+              <button type="button" id="height-cm-btn">cm</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sign-up-field">
+          <label for="weight-num">Weight</label>
+          <div id="weight">
+            <div id="weight-section">
+              <input
+                type="number"
+                id="weight-num"
+                name="weight-num"
+                placeholder="Pounds(lbs)"
+                min="1"
+              />
+            </div>
+            <div>
+              <button type="button" id="weight-lb-btn" disabled>lb</button>
+              <button type="button" id="weight-kg-btn">kg</button>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="cta">Create Account</button>
+      </form>
+    </div>
+  </body>
+</html>
