@@ -99,7 +99,7 @@ select {
 }
 
 /*Weight Section*/
-div[name="weight"] {
+#weight {
   display: flex;
   gap: 10px;
 }

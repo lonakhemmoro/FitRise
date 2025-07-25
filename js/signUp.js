@@ -1,4 +1,3 @@
-import { BASE_URL } from "./modules/baseUrl.js";
 import { ftToCm, lbsToKg } from "./modules/unitConversions.js";
 import displayErrTag from "./modules/feedback/displayErrTag.js";
 import displayErrBorder from "./modules/feedback/displayErrBorder.js";
@@ -79,10 +78,10 @@ function heightAlter() {
 
 //#region Weight buttons
 const poundBtn = document.getElementById("weight-lb-btn");
-const kmBtn = document.getElementById("weight-km-btn");
+const kgBtn = document.getElementById("weight-kg-btn");
 
 poundBtn.onclick = () => weightAlter(true);
-kmBtn.onclick = () => weightAlter(false);
+kgBtn.onclick = () => weightAlter(false);
 
 let isLbsEnabled = true;
 
@@ -96,13 +95,14 @@ function weightAlter(isPoundEnabled) {
     weightInputElem.placeholder = "Kilograms(kg)";
   }
   poundBtn.disabled = isPoundEnabled;
-  kmBtn.disabled = !isPoundEnabled;
+  kgBtn.disabled = !isPoundEnabled;
 }
 
 //#endregion
 
-createButton.onclick = () => createAccount();
-async function createAccount() {
+createButton.onclick = (evnt) => createAccount(evnt);
+async function createAccount(evnt) {
+  evnt.preventDefault();
   document.querySelector("#password + p").classList.remove("err");
   removeAllErrDisplays();
 
