@@ -1,12 +1,15 @@
 /* styles for the entire application */
-body {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
 
+body {
   font-family: "Arial", sans-serif;
   background-color: #f8f9fa;
   color: #333;
+  padding-top: 80px;
 }
 
 /* Header */
@@ -220,72 +223,108 @@ progress::-webkit-progress-value {
   border-radius: 10px;
 }
 
-/* Login Page Styles */
-.navbar {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.navbar img {
-  height: 40px;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /*height: calc(100vh - 120px);*/
-  height: calc(100vh - 60px);
-}
-
-.login-box {
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  height: 60%;
-  width: 30%;
-  min-width: 379px;
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 22px;
-}
-
-.login-box input {
-  display: block;
-  width: 100%;
-  margin: 10px 0;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.login-box button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.login-box button:hover {
-  background-color: #0056b3;
-}
-
 /* Footer */
 footer {
   text-align: center;
-  /*margin-top: 60px;*/
+  margin-top: 60px;
   padding: 20px;
   color: #777;
   background-color: #f1f1f1;
 }
+
+/* profile css */
+.container {
+  padding: 40px 20px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.profile-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #0072ce;
+}
+.profile-header .info {
+  color: #333;
+}
+.profile-header button {
+  padding: 0.5rem 1rem;
+  border: 2px solid #0072ce;
+  background: transparent;
+  color: #0072ce;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.section {
+  margin-bottom: 1.5rem;
+}
+.section h3 {
+  margin-bottom: 0.5rem;
+  color: #0072ce;
+  font-size: 1.25rem;
+}
+.health-info {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 1rem 0;
+  margin: 1rem 0;
+}
+.health-info div {
+  flex: 1;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+}
+.card .label {
+  font-size: 0.9rem;
+  color: #666;
+}
+.card .value {
+  font-size: 1.5rem;
+  color: #0072ce;
+  margin-top: 0.25rem;
+}
+.goals-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.goals-list li {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.goals-list button {
+  float: right;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid #0072ce;
+  background: transparent;
+  color: #0072ce;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+/* end of profile css */

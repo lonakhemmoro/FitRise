@@ -1,0 +1,50 @@
+/* Modals */
+.modal-container {
+  --modal-blue: #0d3f74;
+  --error-red: #c70303;
+
+  position: fixed;
+  bottom: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  border: 2px solid var(--modal-blue);
+  border-radius: 12px;
+  background-color: var(--modal-blue);
+  padding: 10px;
+  height: max-content;
+  width: 50%;
+
+  position: relative;
+}
+
+.modal.err {
+  border-color: var(--error-red);
+  background-color: var(--error-red);
+}
+
+.modal p {
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (width <= 700px) {
+  .modal-container {
+    top: 70px;
+    bottom: revert;
+  }
+
+  .modal {
+    height: max-content;
+    width: 95%;
+  }
+
+  .modal p {
+    font-size: 1.25rem;
+  }
+}

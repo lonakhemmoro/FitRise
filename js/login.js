@@ -1,15 +1,18 @@
-import displayErrModal from "./modules/errors/displayErrModal.js";
-import closeErrModal from "./modules/errors/closeErrModal.js";
-import displayErrTag from "./modules/errors/displayErrTag.js";
-import displayErrBorder from "./modules/errors/displayErrBorder.js";
-import removeAllErrDisplays from "./modules/errors/removeAllErrDisplays.js";
-import { BASE_URL } from "./modules/baseUrl.js";
+import displayErrTag from "./modules/feedback/displayErrTag.js";
+import displayErrBorder from "./modules/feedback/displayErrBorder.js";
+import removeAllErrDisplays from "./modules/feedback/removeAllErrDisplays.js";
+import createModal from "./modules/feedback/createModal.js";
+import createHeader from "./modules/createHeader.js";
 
 const loginButton = document.querySelector("button");
-loginButton.onclick = () => login();
+loginButton.onclick = (evnt) => login(evnt);
 
-//Check if the user is already logged-in
+init();
 async function init() {
+  createHeader();
+
+  //Check if the user is already logged-in
+  /*
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) return;
 
@@ -30,10 +33,12 @@ async function init() {
       }
     })
     .catch((err) => {});
+    */
 }
-init();
 
-async function login() {
+async function login(evnt) {
+  evnt.preventDefault();
+
   const emailInput = document.getElementById("email");
   const email = document.getElementById("email").value.trim();
   const passwordInput = document.getElementById("password");
@@ -104,5 +109,3 @@ async function login() {
   window.location.href = "index.html";
   loginButton.disabled = false;
 }
-
-document.querySelector(".err-modal button").onclick = () => closeErrModal();
