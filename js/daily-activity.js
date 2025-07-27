@@ -2,6 +2,7 @@
 
 import displayErrBorder from "./modules/feedback/displayErrBorder.js";
 import createModal from "./modules/feedback/createModal.js";
+import stringToDate from "./modules/stringToDate.js";
 
 const dailyInput = document.getElementById("value-input");
 const addValueBtn = document.getElementById("add-value");
@@ -79,8 +80,8 @@ function STATE_DAILY_ACTIVITY_init(responseBody) {
 }
 
 function createGoalPeriod(aside, goalData) {
-  const startDate = new Date(goalData.date);
-  const endDate = new Date(goalData.date);
+  const startDate = stringToDate(goalData.date);
+  const endDate = stringToDate(goalData.date);
   endDate.setDate(endDate.getDate() + 3);
   const goalPeriod = `Goal: ${monthName(
     startDate.getMonth()
@@ -94,7 +95,7 @@ function createGoalPeriod(aside, goalData) {
 function createCards(aside, goalValue, dailyActsArr) {
   const goalValueStr = numberWithCommas(goalValue);
   dailyActsArr.forEach((element) => {
-    const date = new Date(element.date);
+    const date = stringToDate(element.date);
     const month = monthName(date.getMonth());
     const day = date.getDate();
     const value = numberWithCommas(element.value);
@@ -111,7 +112,7 @@ function createCards(aside, goalValue, dailyActsArr) {
 function getTodaysDaily(goalValue, dailyActsArr) {
   const currDate = new Date().getDate();
   for (let i = 0; i < dailyActsArr.length; i++) {
-    const dailyDate = new Date(dailyActsArr[i].date).getDate();
+    const dailyDate = stringToDate(dailyActsArr[i].date).getDate();
     if (currDate === dailyDate) {
       dailyIndex = i;
       break;
@@ -257,7 +258,8 @@ function getUnit() {
     title = "🏃 Step Goal";
     documentTitle = "Steps";
   } else if (path.includes("water")) {
-    valueUnit = "liters";
+    //valueUnit = "liters";
+    valueUnit = "cups";
     goalTypeID = 1;
     title = "💧 Water Intake";
     documentTitle = "Water Intake";
