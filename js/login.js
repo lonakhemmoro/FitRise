@@ -11,28 +11,11 @@ init();
 async function init() {
   createHeader();
 
-  //Check if the user is already logged-in
+  //TODO: Check if the user is already logged-in
   /*
-  const accessToken = localStorage.getItem("accessToken");
-  if (!accessToken) return;
-
-  const requstOptions = new Request(BASE_URL + "/logged-in", {
-    method: "GET",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: "Bearer " + accessToken,
-    },
-    credentials: "include",
-  });
-  await fetch(requstOptions)
-    .then((res) => res.json())
-    .then((res) => {
-      if (res) {
-        window.location.href = "index.html";
-      }
-    })
-    .catch((err) => {});
+    //Error handle
+    //If server couldn't be reached
+    createModal("Server could not be reached. Please try again later.", true);
     */
 }
 
@@ -40,14 +23,14 @@ async function login(evnt) {
   evnt.preventDefault();
 
   const emailInput = document.getElementById("email");
-  const email = document.getElementById("email").value.trim();
+  const email = emailInput.value.trim();
   const passwordInput = document.getElementById("password");
-  const password = document.getElementById("password").value;
+  const password = passwordInput.value;
 
   removeAllErrDisplays();
 
   //Validate email
-  const regexp = /\w*@\w*\.\w+/;
+  const regexp = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
   if (email.length === 0) {
     displayErrBorder(emailInput, true);
     displayErrTag(emailInput, "Please provide your email");
@@ -65,41 +48,20 @@ async function login(evnt) {
     return;
   }
 
-  /* TODO: Turn back on
-  //Login
-  const requstOptions = new Request(BASE_URL + "/auth/login", {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify({
-      email,
-      password,
-    }),
-  });
+  //TODO: Call new backend to login
+  /*
+   //loginButton.disabled = true;
+  //Login Request
 
-  loginButton.disabled = true;
-  const request = await fetch(requstOptions).catch((err) => {
-    displayErrModal("Server could not be reached. Please try again later.");
-    return { status: undefined };
-  });
-  if (!request.status) {
-    loginButton.disabled = false;
-    return;
-  }
+  //Error handle
+  //if user doesn't exist or password wrong
+  createModal("Wrong email or password", true);
+  //If server couldn't be reached
+  createModal("Server could not be reached. Please try again later.", true);
 
-  if (request.status === 404) {
-    displayErrModal("User does not exist");
-  } else if (request.status === 500) {
-    displayErrModal("Internal server error. Please try again later.");
-  } else if (request.status === 200) {
-    const { accessToken } = await request.json();
-    localStorage.setItem("accessToken", accessToken);
-
-    // Redirect after successful login
-    //localStorage.setItem("loggedIn", "true");
+  // Redirect after successful login
+  if (successfulLogin)
+    localStorage.setItem("loggedIn", "true");
     window.location.href = "index.html";
     return;
   }
