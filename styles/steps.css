@@ -118,6 +118,10 @@ main button:disabled:hover {
   transition: none;
 }
 
+.hide-label {
+  display: none;
+}
+
 /*Right Side Aside*/
 aside #goal-period {
   font-size: 1.75rem;

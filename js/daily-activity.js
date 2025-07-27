@@ -19,23 +19,23 @@ let dailyIndex = -1;
 const dummyData = {
   goal: {
     value: 19,
-    date: "2025-07-25",
+    date: "2025-07-26",
   },
   daily: [
     {
-      date: "2025-07-25",
+      date: "2025-07-26",
       value: 10,
     },
     {
-      date: "2025-07-26",
+      date: "2025-07-27",
       value: 12,
     },
     {
-      date: "2025-07-27",
+      date: "2025-07-28",
       value: 2,
     },
     {
-      date: "2025-07-28",
+      date: "2025-07-29",
       value: 0,
     },
   ],
@@ -51,7 +51,7 @@ async function init() {
 
   //TODO: backend call
   //If you want to look at the different screens/states change status
-  const response = { status: 404 }; //fake backend call
+  const response = { status: 200 }; //fake backend call
 
   //Change page state based on backend response
   const { status: responseStatus } = response;

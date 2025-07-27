@@ -19,17 +19,22 @@
       <div>
         <h2>🏃 Step Goal</h2>
 
-        <main class="dashboard-">
+        <main>
           <p>Today's Steps:</p>
           <p id="todays-value" class="skeleton-text">0 / 8,000 steps</p>
           <hr />
-          <span
-            ><span>+</span>
-            <input type="number" id="value-input" min="0" placeholder="0"
-          /></span>
-          <div>
-            <button id="add-value">Add Steps</button>
-          </div>
+          <form>
+            <span
+              ><span>+</span>
+              <label class="hide-label" for="value-input"
+                >Number to increase daily activity by:
+              </label>
+              <input type="number" id="value-input" min="0" placeholder="0"
+            /></span>
+            <div>
+              <button type="submit" id="add-value">Add Steps</button>
+            </div>
+          </form>
         </main>
       </div>
       <aside>
@@ -73,13 +78,18 @@
           </div>
           <div>
             <p>Set a custom goal that fits you best</p>
-            <input
-              id="goal-manual-input"
-              type="number"
-              min="1"
-              placeholder="500"
-            />
-            <button id="goal-start-manual">Start Goal</button>
+            <form>
+              <label class="hide-label" for="goal-manual-input"
+                >New Goal Value:</label
+              >
+              <input
+                id="goal-manual-input"
+                type="number"
+                min="1"
+                placeholder="500"
+              />
+              <button type="submit" id="goal-start-manual">Start Goal</button>
+            </form>
           </div>
         </div>
         <button id="goal-exit">X</button>
