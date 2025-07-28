@@ -112,9 +112,11 @@ async function createAccount(evnt) {
   let firstName = firstNameInput.value.trim();
   let lastName = lastNameInput.value.trim();
 
-  let bdMonth = parseInt(document.getElementById("bd-months").value);
-  let bdDays = parseInt(document.getElementById("bd-days").value);
-  let bdYears = parseInt(document.getElementById("bd-years").value);
+  let bdString = `${document.getElementById("bd-months").value} ${
+    document.getElementById("bd-days").value
+  } ${document.getElementById("bd-years").value} 00:00:00`;
+  let bdDate = new Date(bdString);
+  console.log(bdDate);
 
   //Convert height to cm
   let height = 0;
@@ -140,20 +142,11 @@ async function createAccount(evnt) {
     lastName,
     height,
     weight,
-    bdMonth,
-    bdDays,
-    bdYears
+    bdDate
   );
   if (!isValid) return;
 
   //Send Request
-  let bdString =
-    document.getElementById("bd-years").value +
-    "-" +
-    document.getElementById("bd-months").value +
-    "-" +
-    document.getElementById("bd-days").value;
-
   createButton.disabled = true;
 
   /*TODO: Turn back on
@@ -232,16 +225,13 @@ function clientValidate(
   lastName,
   height,
   weight,
-  bdMonth,
-  bdDays,
-  bdYears
+  bdDate
 ) {
   let isValid = true;
   //Email
   const regexp = /\w*@\w*\.\w+/;
   if (email.indexOf(" ") != -1 || !regexp.test(email)) {
     isValid = false;
-    //console.log("email fail");
     displayErrBorder(emailInput);
     displayErrTag(emailInput, "Please provide a valid email");
   }
@@ -249,7 +239,6 @@ function clientValidate(
   //Password
   if (password.length < 8) {
     isValid = false;
-    //console.log("password fail");
     displayErrBorder(passwordInput);
     displayErrBorder(passwordInput.nextElementSibling);
   }
@@ -257,13 +246,13 @@ function clientValidate(
   //Username
   if (username.indexOf(" ") != -1 || username.length === 0) {
     isValid = false;
-    //console.log("username fail");
     displayErrBorder(usernameInput);
     displayErrTag(usernameInput, "Please provide a valid username");
   }
 
-  //TODO: Firstname
-  //TODO: Lastname
+  /*FIXME: Potential Fixme
+    Right now in the db the first and last name fields are Nullable,
+    so validation isn't required unless we want it to be */
 
   //Height
   if (height <= 0 || Number.isNaN(height)) {
@@ -291,7 +280,8 @@ function clientValidate(
   }
 
   //Birthday
-  if (Number.isNaN(bdMonth) || Number.isNaN(bdDays) || Number.isNaN(bdYears)) {
+  //https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
+  if (!(bdDate instanceof Date && !isNaN(bdDate))) {
     isValid = false;
     displayErrBorder(document.getElementById("bd-months"));
     displayErrBorder(document.getElementById("bd-days"));
