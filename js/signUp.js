@@ -3,6 +3,7 @@ import displayErrTag from "./modules/feedback/displayErrTag.js";
 import displayErrBorder from "./modules/feedback/displayErrBorder.js";
 import removeAllErrDisplays from "./modules/feedback/removeAllErrDisplays.js";
 import createModal from "./modules/feedback/createModal.js";
+import supabase from "./modules/supabase.js";
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -112,11 +113,18 @@ async function createAccount(evnt) {
   let firstName = firstNameInput.value.trim();
   let lastName = lastNameInput.value.trim();
 
-  let bdString = `${document.getElementById("bd-months").value} ${
-    document.getElementById("bd-days").value
-  } ${document.getElementById("bd-years").value} 00:00:00`;
-  let bdDate = new Date(bdString);
-  console.log(bdDate);
+  let bdMonth = document.getElementById("bd-months").value;
+  let bdDay = document.getElementById("bd-days").value;
+  let bdYear = document.getElementById("bd-years").value;
+  let bdDate = new Date(
+    parseInt(bdYear),
+    parseInt(bdMonth) - 1,
+    parseInt(bdDay),
+    0,
+    0,
+    0,
+    0
+  );
 
   //Convert height to cm
   let height = 0;
@@ -146,69 +154,41 @@ async function createAccount(evnt) {
   );
   if (!isValid) return;
 
+  let bdString = bdYear + "-" + bdMonth + "-" + bdDay;
+
   //Send Request
   createButton.disabled = true;
-
-  /*TODO: Turn back on
-  const req = new Request(BASE_URL + "/users", {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
+  const { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password,
+    options: {
+      data: {
+        first_name: firstName,
+        last_name: lastName,
+        username: username,
+        birthdate: bdString,
+        weight: weight,
+        height: height,
+      },
     },
-    credentials: "include",
-    body: JSON.stringify({
-      email,
-      password,
-      username,
-      firstName,
-      lastName,
-      birthdate: bdString,
-      height,
-      weight,
-    }),
-  });
-  const request = await fetch(req).catch((err) => {
-    displayErrModal("Server could not be reached. Please try again later.");
-    return { status: undefined };
   });
 
-  if (!request.status) {
+  if (error) {
+    await backendErrorHandler(error);
     createButton.disabled = false;
     return;
   }
 
-  if (request.status === 400) {
-    const response = await request.json();
-    if (response.title.toLowerCase() === "field errors")
-      serverFeedbackDisplay(response.errorFields);
-    else {
-      displayErrModal("Request body error");
-    }
-  } else if (request.status === 500) {
-    displayErrModal("Internal server error. Please try again later.");
-  }
-
-  if (request.status === 201) {
-    //Auto login the user, and redirect to dashboard page
-    await fetch(BASE_URL + "/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, password: password }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        localStorage.setItem("accessToken", res.accessToken);
-      })
-      .catch((err) => {});
-
+  //successful login
+  if (data.session && data.user) {
+    localStorage.setItem("loggedIn", "true");
     window.location.href = "index.html";
+    console.log("SUCCSS");
+  } else {
+    //unknown error that didn't appear in the error variable
+    createModal("Unexpected Error!! Please Contact Support", true);
+    console.log("Failed");
   }
-    */
-
-  //TODO: Remove after turning backend back on
-  localStorage.setItem("loggedIn", "true");
-  window.location.href = "index.html";
 
   createButton.disabled = false;
 }
@@ -293,61 +273,53 @@ function clientValidate(
 }
 
 /**
- * Display errors
- * @param {Array} serverResponseArray
+ *
+ * @param {*} usernameString
+ * @returns {boolean}
  */
-function serverFeedbackDisplay(serverResponseArray) {
-  serverResponseArray.forEach((element) => {
-    const field = element.field.toLowerCase();
-    if (field === "email") {
-      if (element.details.toLowerCase() === "email_invalid") {
-        displayErrBorder(emailInput);
-        displayErrTag(emailInput, "Please provide a valid email");
-      } else if (element.details.toLowerCase() === "email_conflict") {
-        displayErrBorder(emailInput);
-        displayErrTag(emailInput, "An account with this email already exists");
-      }
-    }
+async function isUsernameConflict(usernameString) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("username")
+    .eq("username", usernameString.trim());
 
-    if (field === "password") {
-      displayErrBorder(passwordInput);
-      displayErrBorder(passwordInput.nextElementSibling);
-    }
+  if (error) throw error;
 
-    if (field === "birthdate") {
-      displayErrBorder(monthSelect);
-      displayErrBorder(daySelect);
-      displayErrBorder(yearSelect);
-      displayErrTag(birthdateDiv, "Please provide a valid date");
-    }
+  return data.length > 0;
+}
 
-    if (field === "weight") {
-      displayErrBorder(weightInput);
-      displayErrTag(
-        document.getElementById("weight"),
-        "Please provide a valid weight"
-      );
-    }
+async function backendErrorHandler(error) {
+  const err = error.code;
 
-    if (field === "height") {
-      displayErrBorder(document.getElementById("height-cm"));
-      displayErrBorder(document.getElementById("height-feet"));
-      displayErrBorder(document.getElementById("height-inch"));
-      const heightDiv = document.getElementById("height-section");
-      displayErrTag(heightDiv.parentElement, "Please provide a valid height");
-    }
-
-    if (field === "username") {
-      if (element.details.toLowerCase() === "username_invalid") {
-        displayErrBorder(usernameInput);
-        displayErrTag(usernameInput, "Please provide a valid username");
-      } else if (element.details.toLowerCase() === "username_conflict") {
+  if (err === "user_already_exists") {
+    displayErrBorder(emailInput);
+    displayErrTag(emailInput, "An account with this email already exists");
+  } else if (err === "unexpected_failure") {
+    //May be a username conflict due to the username field being UNIQUE in the db
+    let usernameConflict = false;
+    try {
+      usernameConflict = await isUsernameConflict(usernameInput.value.trim());
+      if (usernameConflict) {
         displayErrBorder(usernameInput);
         displayErrTag(
           usernameInput,
           "Account with this username already exists"
         );
       }
+    } catch (err) {
+      console.log(err);
+      createModal("Unexpected Error!! Please Try Again Later!", true);
+      return;
     }
-  });
+
+    if (!usernameConflict) {
+      console.log(error);
+      console.log(err.code);
+      createModal("Unexpected Error!! Please Try Again Later!", true);
+    }
+  } else {
+    console.log(error);
+    console.log(error.code);
+    createModal("Unexpected Error!! Please Try Again Later!", true);
+  }
 }
