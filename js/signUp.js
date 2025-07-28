@@ -209,7 +209,7 @@ function clientValidate(
 ) {
   let isValid = true;
   //Email
-  const regexp = /\w*@\w*\.\w+/;
+  const regexp = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
   if (email.indexOf(" ") != -1 || !regexp.test(email)) {
     isValid = false;
     displayErrBorder(emailInput);
