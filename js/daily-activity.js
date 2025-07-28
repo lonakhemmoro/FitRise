@@ -81,7 +81,7 @@ function STATE_DAILY_ACTIVITY_init(responseBody) {
 
 function createGoalPeriod(aside, goalData) {
   const startDate = stringToDate(goalData.date);
-  const endDate = stringToDate(goalData.date);
+  const endDate = new Date(startDate);
   endDate.setDate(endDate.getDate() + 3);
   const goalPeriod = `Goal: ${monthName(
     startDate.getMonth()
@@ -272,6 +272,7 @@ function getUnit() {
 
   document.querySelector(".content h2").innerText = title;
   document.title = documentTitle + " - FitRise";
+  addValueBtn.innerText = "Add " + valueUnit;
 }
 
 function numberWithCommas(x) {
