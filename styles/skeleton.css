@@ -1,0 +1,45 @@
+.skeleton {
+  animation: skeleton-loading 1.5s linear infinite alternate;
+}
+
+.skeleton-text {
+  width: 100%;
+  margin-bottom: 0.25rem;
+  border-radius: 0.25rem;
+  color: transparent;
+  animation: skeleton-loading 1.5s linear infinite alternate;
+}
+/*
+.content h2.skeleton-text {
+  color: transparent;
+}
+*/
+
+#todays-value.skeleton-text {
+  width: fit-content;
+}
+
+.daily-card .skeleton-text:first-child {
+  width: 40%;
+}
+
+.daily-card .skeleton-text:nth-child(2) {
+  width: 60%;
+  margin-bottom: 0;
+}
+
+/*
+.skeleton-text:last-child {
+  margin-bottom: 0;
+}
+  */
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 70%);
+  }
+
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}

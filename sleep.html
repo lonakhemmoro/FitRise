@@ -1,23 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Sleep - FitRise</title>
-  <link rel="stylesheet" href="styles/style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Sleep - FitRise</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/steps.css" />
+    <link rel="stylesheet" href="styles/modal.css" />
+    <link rel="stylesheet" href="styles/skeleton.css" />
+    <script src="./js/main.js"></script>
+    <script src="./js/daily-activity.js" type="module" defer></script>
+  </head>
+  <body>
     <div id="header-placeholder"></div>
 
-  <main class="dashboard">
-    <div class="card">
-      <h2>🛌 Sleep</h2>
-      <p>Sleep Goal: 8 hours</p>
-      <p>Last Night's Sleep: <span id="sleepCount">0</span> hrs</p>
-      <button onclick="updateSleep()">Update Sleep Log</button>
-    </div>
-  </main>
-  <script src="js/main.js"></script>
-  <script src="js/goals.js"></script>
-</body>
-</html>
+    <div class="content">
+      <div>
+        <h2>Sleep</h2>
 
+        <main>
+          <p>Last Night's Sleep:</p>
+          <p id="todays-value" class="skeleton-text">0 / 8,000 steps</p>
+          <hr />
+          <form>
+            <span
+              ><span>+</span>
+              <label class="hide-label" for="value-input"
+                >Number to increase daily activity by:
+              </label>
+              <input type="number" id="value-input" min="0" placeholder="0"
+            /></span>
+            <div>
+              <button type="submit" id="add-value">Add Steps</button>
+            </div>
+          </form>
+        </main>
+      </div>
+      <aside>
+        <h2 id="goal-period" class="skeleton-text">Goal: July 4 - July 8</h2>
+        <div class="daily-card">
+          <p class="skeleton-text">July 1</p>
+          <p class="skeleton-text">0 / 8000 steps</p>
+        </div>
+        <div class="daily-card">
+          <p class="skeleton-text">July 1</p>
+          <p class="skeleton-text">0 / 8000 steps</p>
+        </div>
+        <div class="daily-card">
+          <p class="skeleton-text">July 1</p>
+          <p class="skeleton-text">0 / 8000 steps</p>
+        </div>
+        <div class="daily-card">
+          <p class="skeleton-text">July 1</p>
+          <p class="skeleton-text">0 / 8000 steps</p>
+        </div>
+      </aside>
+    </div>
+
+    <div id="goal-create" class="closed">
+      <div id="goal-border">
+        <h2>Start Your New Goal</h2>
+        <div id="goal-content">
+          <div>
+            <p>
+              Start your new goal using a recommended value based on your past
+              goals
+            </p>
+            <span>Recommended Value: </span
+            ><span id="goal-recommended-value">10,009</span>
+            <button id="goal-start-recommended">Start Goal</button>
+          </div>
+          <div class="goal-divider">
+            <div></div>
+            <span>or</span>
+            <div></div>
+          </div>
+          <div>
+            <p>Set a custom goal that fits you best</p>
+            <form>
+              <label class="hide-label" for="goal-manual-input"
+                >New Goal Value:</label
+              >
+              <input
+                id="goal-manual-input"
+                type="number"
+                min="1"
+                placeholder="500"
+              />
+              <button type="submit" id="goal-start-manual">Start Goal</button>
+            </form>
+          </div>
+        </div>
+        <button id="goal-exit">X</button>
+      </div>
+    </div>
+  </body>
+</html>
