@@ -5,6 +5,7 @@ import {
 } from "./modules/pageSelectRelated.js";
 import stringToDate from "./modules/stringToDate.js";
 
+//FriendsList
 const dummyDate0 = [
   {
     firstName: "Tim",
@@ -36,6 +37,31 @@ const dummyDate0 = [
   },
 ];
 
+//Friend Requests
+const dummyData1 = [
+  {
+    firstName: "Tim",
+    lastName: "Patrick",
+    date: "2025-07-30",
+    username: "timBim",
+    source: "incoming",
+  },
+  {
+    firstName: "Tim",
+    lastName: "Patrick",
+    date: "2025-07-30",
+    username: "timBim",
+    source: "incoming",
+  },
+  {
+    firstName: null,
+    lastName: "Patrick",
+    date: "2025-07-30",
+    username: "timBim",
+    source: "outgoing",
+  },
+];
+
 createHeader();
 init();
 const pageSelectorHolder = document.querySelector(".page-buttons");
@@ -49,9 +75,9 @@ function init() {
 
   //TODO: Backend Call
 
-  const data = dummyDate0;
+  const data = dummyData1;
   data.forEach((elem) => {
-    const a = createFriendCard(elem, cardHolder);
+    const a = createFriendCard(elem);
     cardHolder.appendChild(a);
   });
 }
@@ -83,24 +109,54 @@ function createFriendCard(friendData) {
   const date = stringToDate(friendData.date);
   const convertedDate = date.toLocaleDateString("en-US");
 
-  friendCard.innerHTML = `<a href="${link}">
+  friendCard.innerHTML = `
+  <a href="${link}">
     <p class="fc-name" ${style} title="${title}">${fullName.trim()}</p>
     <p class="fc-username" title="${username}">@${username}</p>
-            <p>Friend Since: ${convertedDate}</p>
-          </a>`;
+    <p>Friend Since: ${convertedDate}</p>
+  </a>
+  <div></div>`;
 
-  /* Template
-  <div class="friend-card card">
-    <a href="index.html">
-      <p class="fc-name">FirstName LastName</p>
-      <p class="fc-username">@username</p>
-      <p>Friend Since: 05-20-2002</p>
-    </a>
-  </div>
-  */
+  //Friend Request Specific-code
+  if (friendData.source) {
+    const div = friendCard.querySelector("div");
+
+    if (friendData.source === "incoming") {
+      const acceptBtn = document.createElement("button");
+      acceptBtn.innerText = "check";
+      acceptBtn.classList.add(...["material-symbols-outlined", "fc-a"]);
+      acceptBtn.onclick = () => acceptRequest("id placeholder"); //TODO
+      div.appendChild(acceptBtn);
+    }
+
+    const rejectBtn = document.createElement("button");
+    rejectBtn.innerText = "close";
+    rejectBtn.classList.add(...["material-symbols-outlined", "fc-r"]);
+    rejectBtn.onclick = () => rejectRequest("id placeholder"); //TODO
+    div.appendChild(rejectBtn);
+
+    const lastP = friendCard.querySelector("a").lastElementChild;
+    lastP.innerText =
+      friendData.source === "incoming"
+        ? "Incoming Request"
+        : "Outgoing Request";
+  }
 
   return friendCard;
 }
+
+//#region Friend Request
+function acceptRequest(userID) {
+  //TODO: Backend
+  console.log("accepting Request");
+}
+
+function rejectRequest(userID) {
+  //TODO: Backend
+  console.log("rejecting Request");
+}
+
+//#endregion
 
 //#region Page Select
 
