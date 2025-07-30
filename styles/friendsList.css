@@ -1,5 +1,11 @@
+body {
+  --yellow: #ffe306;
+  --grey: #bbb;
+  --nav-blue: #0459b5;
+}
+
 .friend-nav {
-  background-color: #0459b5;
+  background-color: var(--nav-blue);
   height: 35px;
   margin-top: -20px;
   align-content: center;
@@ -12,7 +18,7 @@
 }
 
 .friend-nav ul li a.fn-active {
-  color: #ffe306;
+  color: var(--yellow);
   text-decoration: underline;
 }
 
@@ -126,7 +132,7 @@
   user-select: none;
 
   background-color: transparent;
-  border: 1px solid #bbb;
+  border: 1px solid var(--grey);
   border-radius: 8px;
 
   transition: background-color 0.1s ease-in;
@@ -140,6 +146,36 @@ button.pb-highlight {
   background-color: #007bff;
   border-color: #007bff;
   color: #fff;
+}
+
+/*User Search*/
+#search-form {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  height: 35px;
+
+  margin-top: 5px;
+}
+
+#search-form input {
+  width: 500px;
+  border: 2px solid var(--nav-blue);
+  border-radius: 5px 0 0 5px;
+  padding: 5px;
+  outline: none;
+
+  font-size: 1.2rem;
+}
+
+#search-form button {
+  width: 45px;
+  border-radius: 0 5px 5px 0;
+  border: 2px solid var(--nav-blue);
+  background-color: var(--nav-blue);
+  color: #fff;
+  cursor: pointer;
 }
 
 /*Responsive*/
