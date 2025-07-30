@@ -1,0 +1,161 @@
+.friend-nav {
+  background-color: #0459b5;
+  height: 35px;
+  margin-top: -20px;
+  align-content: center;
+}
+
+.friend-nav ul {
+  max-width: fit-content;
+  margin-inline: auto;
+  gap: 58px;
+}
+
+.friend-nav ul li a.fn-active {
+  color: #ffe306;
+  text-decoration: underline;
+}
+
+/*-----*/
+.content {
+  padding: 20px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  row-gap: 15px;
+  column-gap: normal;
+}
+
+/*Friend Cards*/
+
+.friend-card {
+  text-align: revert;
+  padding: 10px;
+  white-space: nowrap;
+
+  min-width: 300px;
+
+  position: relative;
+}
+
+.friend-card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.friend-card a .fc-name {
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.fc-name + p {
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
+.fc-fr {
+  max-width: 80%;
+}
+
+.friend-card div:last-child {
+  position: absolute;
+
+  height: fit-content;
+  margin: auto;
+  inset: 0 auto;
+  right: 0;
+  padding-right: 10px;
+}
+
+/*Friend Request*/
+
+.fc-a,
+.fc-r {
+  --col: #bbb;
+  color: #fff;
+  background-color: var(--col);
+  border: 3px solid var(--col);
+  border-radius: 16px;
+  padding: 1px;
+  cursor: pointer;
+
+  transition: background-color 0.3s linear;
+}
+
+.fc-a:hover,
+.fc-r:hover {
+  background-color: transparent;
+  color: var(--col);
+}
+
+.fc-a {
+  --col: #0a8635;
+  margin-right: 5px;
+}
+
+.fc-r {
+  --col: #b90929;
+}
+
+/* Page Select */
+
+.page-buttons {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 4px;
+  padding-bottom: 15px;
+}
+
+.page-buttons * {
+  display: inline;
+  user-select: none;
+}
+
+.page-buttons button {
+  --square: 30px;
+  width: var(--square);
+  height: var(--square);
+
+  font-size: larger;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+
+  background-color: transparent;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+
+  transition: background-color 0.1s ease-in;
+}
+
+.page-buttons button:not(.pb-highlight):hover {
+  background-color: rgb(135, 138, 143);
+}
+
+button.pb-highlight {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+/*Responsive*/
+
+@media (width <= 700px) {
+  .friend-nav {
+    height: 45px;
+  }
+  .friend-nav ul {
+    gap: 0px;
+    max-width: revert;
+    margin-inline: revert;
+    justify-content: space-evenly;
+  }
+
+  .page-buttons button {
+    --square: 42px;
+  }
+}
