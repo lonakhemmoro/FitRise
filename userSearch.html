@@ -1,0 +1,46 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Search - FitRise</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/friendsList.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=search"
+    />
+    <script src="./js/userSearch.js" type="module" defer></script>
+  </head>
+  <body>
+    <nav class="friend-nav">
+      <ul>
+        <li><a href="friendsList.html">Friends List</a></li>
+        <li><a href="friendRequests.html">Friend Requests</a></li>
+        <li><a class="fn-active" href="userSearch.html">User Search</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <form id="search-form">
+        <input type="text" placeholder="Search User" />
+        <button type="submit">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+      </form>
+      <div class="content">
+        <!-- Template Friend Request card
+        <div class="friend-card card">
+          <a href="index.html">
+            <p class="fc-name fc-fr">
+              FirstName LastName
+            </p>
+            <p class="fc-username fc-fr">Username</p>
+
+          </a>
+        </div>
+        -->
+      </div>
+      <div class="page-buttons"></div>
+    </main>
+  </body>
+</html>
