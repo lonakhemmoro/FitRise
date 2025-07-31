@@ -1,4 +1,9 @@
 /* Login Page Styles */
+.container a,
+.container a:visited {
+  color: #007bff;
+}
+
 .container {
   all: revert;
 
