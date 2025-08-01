@@ -10,11 +10,6 @@ loginButton.onclick = (evnt) => login(evnt);
 init();
 async function init() {
   //TODO: Check if the user is already logged-in. If so, redirect them
-  /*
-    //Error handle
-    //If server couldn't be reached
-    createModal("Server could not be reached. Please try again later.", true);
-    */
 }
 
 async function login(evnt) {
@@ -47,6 +42,7 @@ async function login(evnt) {
   }
 
   //Call backend
+  loginButton.disabled = true;
   const { data, error } = await supabase.auth.signInWithPassword({
     email: email,
     password: password,
@@ -66,7 +62,7 @@ async function login(evnt) {
     return;
   } else if (!data.session || !data.user) {
     createModal("Unexpected Error!! Please Try Again Later!", true);
-    alert("Alert to devs To check the backend logs");
+    console.log("Alert to devs To check the backend logs");
     loginButton.disabled = false;
     return;
   }
