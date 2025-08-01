@@ -2,21 +2,14 @@ import displayErrTag from "./modules/feedback/displayErrTag.js";
 import displayErrBorder from "./modules/feedback/displayErrBorder.js";
 import removeAllErrDisplays from "./modules/feedback/removeAllErrDisplays.js";
 import createModal from "./modules/feedback/createModal.js";
-import createHeader from "./modules/createHeader.js";
+import supabase from "./modules/supabase.js";
 
-const loginButton = document.querySelector("button");
+const loginButton = document.querySelector(".container button");
 loginButton.onclick = (evnt) => login(evnt);
 
 init();
 async function init() {
-  createHeader();
-
-  //TODO: Check if the user is already logged-in
-  /*
-    //Error handle
-    //If server couldn't be reached
-    createModal("Server could not be reached. Please try again later.", true);
-    */
+  //TODO: Check if the user is already logged-in. If so, redirect them
 }
 
 async function login(evnt) {
@@ -48,26 +41,33 @@ async function login(evnt) {
     return;
   }
 
-  //TODO: Call new backend to login
-  /*
-   //loginButton.disabled = true;
-  //Login Request
+  //Call backend
+  loginButton.disabled = true;
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
 
-  //Error handle
-  //if user doesn't exist or password wrong
-  createModal("Wrong email or password", true);
-  //If server couldn't be reached
-  createModal("Server could not be reached. Please try again later.", true);
-
-  // Redirect after successful login
-  if (successfulLogin)
-    localStorage.setItem("loggedIn", "true");
-    window.location.href = "index.html";
+  if (error) {
+    if (error.code === "invalid_credentials") {
+      //Caused by wrong/no-account email or wrong password
+      displayErrBorder(emailInput, true);
+      displayErrBorder(passwordInput, true);
+      displayErrTag(emailInput, "Incorrect email or password");
+    } else {
+      console.log(error.code);
+      createModal("Unexpected Error!! Please Try Again Later!", true);
+    }
+    loginButton.disabled = false;
+    return;
+  } else if (!data.session || !data.user) {
+    createModal("Unexpected Error!! Please Try Again Later!", true);
+    console.log("Alert to devs To check the backend logs");
+    loginButton.disabled = false;
     return;
   }
-    */
 
+  //Redirect on successful login
   localStorage.setItem("loggedIn", "true");
   window.location.href = "index.html";
-  loginButton.disabled = false;
 }
