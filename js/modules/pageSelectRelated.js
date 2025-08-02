@@ -6,6 +6,9 @@ let pageCount = 1;
 
 let holderElement;
 
+let buttonActive = false;
+//Has one of the page buttons been pressed, and code-execution is active?
+
 /* Template
 <div class="page-buttons">
   <button>&lt;</button>
@@ -57,16 +60,37 @@ export function createPageSelector(total, holderDiv) {
 export function setPageClick(func) {
   const buttons = holderElement.querySelectorAll("ol li button");
   buttons.forEach((element) => {
-    element.onclick = () => {
-      const num = parseInt(element.innerText);
-      func(num);
+    const num = parseInt(element.innerText);
+
+    element.onclick = async () => {
+      if (buttonActive) return;
+
+      buttonActive = true;
+      await func(num);
       updatePageSelector(num);
+      buttonActive = false;
     };
   });
 
   //Give functionality to the <> buttons
-  holderElement.firstElementChild.onclick = () => updatePageWithSymbols(true);
-  holderElement.lastElementChild.onclick = () => updatePageWithSymbols(false);
+  holderElement.firstElementChild.onclick = async () => {
+    if (buttonActive) return;
+
+    buttonActive = true;
+    const num = pagePosition - 1;
+    await func(num);
+    updatePageSelector(num);
+    buttonActive = false;
+  };
+  holderElement.lastElementChild.onclick = async () => {
+    if (buttonActive) return;
+
+    buttonActive = true;
+    const num = pagePosition + 1;
+    await func(num);
+    updatePageSelector(num);
+    buttonActive = false;
+  };
 }
 
 //Assumes the page isn't going to reload upon button click
@@ -109,7 +133,13 @@ function updatePageSelector(pagePos) {
   holderElement.lastElementChild.disabled = pagePos === pageCount;
 }
 
-function updatePageWithSymbols(isLessThanButton) {
-  const newPosition = isLessThanButton ? pagePosition - 1 : pagePosition + 1;
-  updatePageSelector(newPosition);
+export function deletePageButtons() {
+  //Remove event listeners
+  const numButtons = holderElement.querySelectorAll("ol li button");
+  numButtons.forEach((element) => {
+    element.remove();
+  });
+
+  //Remove HTML
+  holderElement.innerHTML = "";
 }
