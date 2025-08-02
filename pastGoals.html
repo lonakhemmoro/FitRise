@@ -1,0 +1,42 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Past Goals - FitRise</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/pastGoals.css" />
+    <link rel="stylesheet" href="styles/pageButtons.css" />
+    <link rel="stylesheet" href="styles/modal.css" />
+    <script src="./js/main.js"></script>
+    <script src="./js/pastGoals.js" type="module" defer></script>
+  </head>
+  <body>
+    <div class="content">
+      <aside>
+        <form action="">
+          <label for="goal-type">Goal Type</label>
+          <select name="goal-type" id="goal-type">
+            <option value="1">Water</option>
+            <option value="2">Sleep</option>
+            <option value="3">Steps</option>
+          </select>
+          <label for="completion-status">Completion Status:</label>
+          <select name="completion-status" id="completion-status">
+            <option value="all">All</option>
+            <option value="complete">Completed</option>
+            <option value="fail">Failed</option>
+            <option value="active">Active</option>
+          </select>
+          <label for="from-date">From</label>
+          <input type="date" id="from-date" />
+          <label for="to-date">To</label>
+          <input type="date" id="to-date" />
+        </form>
+      </aside>
+      <main>
+        <div class="content-holder"></div>
+        <div class="page-ph"></div>
+      </main>
+    </div>
+  </body>
+</html>

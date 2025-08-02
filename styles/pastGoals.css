@@ -1,0 +1,79 @@
+body {
+  background-color: #f8f9fa;
+  --nav-margin-down: -20px;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  min-height: calc(100% - var(--nav-margin-down));
+  margin-top: var(--nav-margin-down);
+}
+
+main {
+  padding: 5px 15px;
+  width: 100%;
+}
+
+.content-holder {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 25px;
+  justify-content: center;
+}
+
+aside {
+  background-color: #c2c8d5;
+  min-width: 300px;
+  width: 300px;
+}
+
+aside form {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+aside form label + select,
+aside form label + input {
+  margin-bottom: 10px;
+}
+
+/* Goal Card */
+.goal-period,
+.daily-holder p:first-child,
+.goal-status {
+  font-size: 1.25rem;
+  font-weight: 600;
+
+  margin-bottom: 5px;
+}
+
+.daily-holder-parent {
+  background-color: #f8f9fa;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+
+  margin-bottom: 10px;
+  min-width: 222px;
+}
+
+/* Responsive */
+@media (width <= 700px) {
+  .content {
+    flex-direction: column;
+  }
+
+  aside {
+    min-width: 100%;
+    width: 100%;
+    height: fit-content;
+  }
+
+  aside form label + select,
+  aside form label + input {
+    margin-bottom: 20px;
+  }
+}
