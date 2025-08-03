@@ -33,7 +33,8 @@ body {
   column-gap: normal;
 }
 
-.content.load {
+.content.load,
+.friend-card.load {
   opacity: 40%;
 }
 
