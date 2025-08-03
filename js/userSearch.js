@@ -39,7 +39,6 @@ async function newUserSearch(evnt) {
     .range(0, 5);
 
   if (error) {
-    contentHolder.classList.remove("load");
     deletePageButtons();
     onError(error);
     return;
@@ -110,7 +109,6 @@ async function onPageSelect(pageNum) {
     .range(rangeMin, rangeMax);
 
   if (error) {
-    contentHolder.classList.remove("load");
     onError(error);
     return;
   }
@@ -130,4 +128,5 @@ function onError(err) {
   const str = "An error has occured. Please try again later.";
   contentHolder.innerHTML = `<p>${str}</p>`;
   createModal(str, true);
+  contentHolder.classList.remove("load");
 }

@@ -92,6 +92,8 @@ async function onPageSelect(pageNum) {
       "user_id, users!friend_requests_user_id_fkey(username, first_name, last_name)";
   }
 
+  contentHolder.classList.add("load");
+
   const { data, error } = await supabase
     .from("friend_requests")
     .select(selectStr)
@@ -109,6 +111,8 @@ async function onPageSelect(pageNum) {
     const a = createFriendCard(element, isOutgoingRequest);
     contentHolder.appendChild(a);
   });
+
+  contentHolder.classList.remove("load");
 }
 
 function createFriendCard(userData, isOutgoingRequest) {
@@ -215,4 +219,5 @@ function onError(err) {
   const str = "An error has occured. Please try again later.";
   contentHolder.innerHTML = `<p>${str}</p>`;
   createModal(str, true);
+  contentHolder.classList.remove("load");
 }

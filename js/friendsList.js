@@ -178,4 +178,5 @@ function onError(err) {
   const str = "An error has occured. Please try again later.";
   contentHolder.innerHTML = `<p>${str}</p>`;
   createModal(str, true);
+  contentHolder.classList.remove("load");
 }
