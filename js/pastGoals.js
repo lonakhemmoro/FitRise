@@ -9,40 +9,21 @@ import supabase from "./modules/supabase.js";
 import createHeader from "./modules/createHeader.js";
 import createModal from "./modules/feedback/createModal.js";
 
-/*
-const dummyData0 = [
-  {
-    daily_activities: [
-      { date: "2025-07-26", value: 0 },
-      { date: "2025-07-27", value: 1000 },
-      { date: "2025-07-28", value: 95212 },
-      { date: "2025-07-29", value: 2 },
-    ],
-    date: "2025-07-26",
-    id: 13,
-    status: "active",
-    value: 2000,
-  },
-];
-*/
 let userID = "";
 let supabaseQuery;
-let rangeMin = 0,
-  rangeMax = 0;
 let valueUnit = "";
 
 const contentHolder = document.querySelector(".content-holder");
 
+createHeader();
 init();
 async function init() {
-  createHeader();
   //TODO: Check if logged in
 
-  const { data, error } = await supabase.auth.getSession();
-  userID = data.session.user.id;
+  const { data, error } = await supabase.auth.getUser();
+  userID = data.user.id;
   if (error) {
-    console.log("Init Error");
-    onError();
+    onError(error);
   }
 
   await newQueryInit();
@@ -150,24 +131,25 @@ function getSupabaseQuery(
   endDate,
   isInitial
 ) {
-  let supabaseQuery;
+  let supabaseQuery = supabase.froms("goals");
 
   if (isInitial) {
-    supabaseQuery = supabase
-      .from("goals")
-      .select("date, value, status, id, daily_activities!inner(value, date) ", {
+    supabaseQuery = supabaseQuery.select(
+      "date, value, status, id, daily_activities!inner(value, date) ",
+      {
         count: "exact",
         head: false,
-      })
-      .eq("user_id", userID)
-      .eq("goal_type_id", goalType);
+      }
+    );
   } else {
-    supabaseQuery = supabase
-      .from("goals")
-      .select("date, value, status, id, daily_activities!inner(value, date) ")
-      .eq("user_id", userID)
-      .eq("goal_type_id", goalType);
+    supabaseQuery = supabaseQuery.select(
+      "date, value, status, id, daily_activities!inner(value, date) "
+    );
   }
+
+  supabaseQuery = supabaseQuery
+    .eq("user_id", userID)
+    .eq("goal_type_id", goalType);
 
   if (completeStatus !== "all") {
     supabaseQuery = supabaseQuery.eq("status", completeStatus);
@@ -191,15 +173,15 @@ function getSupabaseQuery(
 //Query the next set of data
 async function onPageSelect(num) {
   //Num is the current page position
-  rangeMin = 6 * (num - 1);
-  rangeMax = 6 * num - 1;
+  const rangeMin = 6 * (num - 1);
+  const rangeMax = 6 * num - 1;
+
+  contentHolder.classList.add("load");
 
   const { data, error } = await supabaseQuery.range(rangeMin, rangeMax);
 
   if (error) {
-    console.log("OnPageSelect Error");
-    console.log(error);
-    onError();
+    onError(error);
     return;
   }
 
@@ -207,6 +189,8 @@ async function onPageSelect(num) {
   data.forEach((element) => {
     createGoalCard(element);
   });
+
+  contentHolder.classList.remove("load");
 }
 
 //Called on load, or when a new filter is selected. Also remakes the page buttons
@@ -240,23 +224,23 @@ async function newQueryInit() {
   );
 
   //Query Backend
+  contentHolder.classList.add("load");
+
   const { data, count, error } = await initSupabaseQuery.range(0, 5);
 
   if (error) {
-    console.log(error);
-    onError();
+    onError(error);
     return;
   }
 
   if (count === 0) {
-    if (document.querySelector(".page-ph").innerHTML !== "") {
-      deletePageButtons();
-    }
+    deletePageButtons();
     contentHolder.innerHTML = `<p>You have no goals to display.</p>`;
+    contentHolder.classList.remove("load");
     return;
   } else {
     createPageSelector(count, document.querySelector(".page-ph"));
-    setPageClick(onPageSelect, true);
+    setPageClick(onPageSelect);
   }
 
   //Populate the first page with data
@@ -264,10 +248,14 @@ async function newQueryInit() {
   data.forEach((element) => {
     createGoalCard(element);
   });
+
+  contentHolder.classList.remove("load");
 }
 //#endregion
 
-function onError() {
+function onError(error) {
   contentHolder.innerHTML = `<p>An error has occured. Please try again later.</p>`;
   createModal("An error has occured. Please try again later.", true);
+  console.log(error);
+  contentHolder.classList.remove("load");
 }

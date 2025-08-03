@@ -6,6 +6,9 @@ let pageCount = 1;
 
 let holderElement;
 
+let buttonActive = false;
+//Has one of the page buttons been pressed, and code-execution is active?
+
 /* Template
 <div class="page-buttons">
   <button>&lt;</button>
@@ -54,34 +57,39 @@ export function createPageSelector(total, holderDiv) {
  *
  * @param {function} func The function you want the buttons to perform on click
  */
-export function setPageClick(func, isAsync) {
+export function setPageClick(func) {
   const buttons = holderElement.querySelectorAll("ol li button");
   buttons.forEach((element) => {
-    if (isAsync) {
-      element.onclick = async () => {
-        const num = parseInt(element.innerText);
-        await func(num);
-        updatePageSelector(num);
-      };
-    } else {
-      element.onclick = () => {
-        const num = parseInt(element.innerText);
-        func(num);
-        updatePageSelector(num);
-      };
-    }
+    const num = parseInt(element.innerText);
+
+    element.onclick = async () => {
+      if (buttonActive) return;
+
+      buttonActive = true;
+      await func(num);
+      updatePageSelector(num);
+      buttonActive = false;
+    };
   });
 
   //Give functionality to the <> buttons
-  holderElement.firstElementChild.onclick = () => {
+  holderElement.firstElementChild.onclick = async () => {
+    if (buttonActive) return;
+
+    buttonActive = true;
     const num = pagePosition - 1;
-    func(num);
+    await func(num);
     updatePageSelector(num);
+    buttonActive = false;
   };
-  holderElement.lastElementChild.onclick = () => {
+  holderElement.lastElementChild.onclick = async () => {
+    if (buttonActive) return;
+
+    buttonActive = true;
     const num = pagePosition + 1;
-    func(num);
+    await func(num);
     updatePageSelector(num);
+    buttonActive = false;
   };
 }
 
@@ -127,6 +135,8 @@ function updatePageSelector(pagePos) {
 
 export function deletePageButtons() {
   //Remove event listeners
+  if (!holderElement) return;
+
   const numButtons = holderElement.querySelectorAll("ol li button");
   numButtons.forEach((element) => {
     element.remove();
