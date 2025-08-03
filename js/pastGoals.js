@@ -131,7 +131,7 @@ function getSupabaseQuery(
   endDate,
   isInitial
 ) {
-  let supabaseQuery = supabase.froms("goals");
+  let supabaseQuery = supabase.from("goals");
 
   if (isInitial) {
     supabaseQuery = supabaseQuery.select(
