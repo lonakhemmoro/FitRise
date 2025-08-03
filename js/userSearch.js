@@ -14,10 +14,6 @@ const searchBtn = document.querySelector("form button");
 searchBtn.onclick = (evnt) => newUserSearch(evnt);
 
 createHeader();
-init();
-function init() {
-  //TODO: Check if logged in
-}
 
 async function newUserSearch(evnt) {
   evnt.preventDefault();
@@ -101,8 +97,6 @@ function createUserCard(userData) {
   return friendCard;
 }
 
-//#region Page Select
-
 async function onPageSelect(pageNum) {
   contentHolder.classList.add("load");
 
@@ -130,7 +124,6 @@ async function onPageSelect(pageNum) {
 
   contentHolder.classList.remove("load");
 }
-//#endregion
 
 function onError(err) {
   console.log(err);

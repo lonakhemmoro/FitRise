@@ -15,10 +15,10 @@ createHeader();
 init();
 
 async function init() {
-  //TODO: Check if logged in
+  //TODO: Decide what to do if user isn't logged in
 
-  const { data: dataI, error: errorI } = await supabase.auth.getSession();
-  userID = dataI.session.user.id;
+  const { data: dataI, error: errorI } = await supabase.auth.getUser();
+  userID = dataI.user.id;
   if (errorI) {
     console.log("Init Error");
     onError(errorI);
@@ -86,34 +86,7 @@ function createFriendCard(userData, dateData) {
     <p class="fc-username" title="${username}">@${username}</p>
     <p>Friend Since: ${convertedDate}</p>
   </a>
-  <div></div>`;
-
-  //Friend Request Specific-code
-  /*
-  if (friendData.source) {
-    const div = friendCard.querySelector("div");
-
-    if (friendData.source === "incoming") {
-      const acceptBtn = document.createElement("button");
-      acceptBtn.innerText = "check";
-      acceptBtn.classList.add(...["material-symbols-outlined", "fc-a"]);
-      acceptBtn.onclick = () => acceptRequest("id placeholder"); //TODO
-      div.appendChild(acceptBtn);
-    }
-
-    const rejectBtn = document.createElement("button");
-    rejectBtn.innerText = "close";
-    rejectBtn.classList.add(...["material-symbols-outlined", "fc-r"]);
-    rejectBtn.onclick = () => rejectRequest("id placeholder"); //TODO
-    div.appendChild(rejectBtn);
-
-    const lastP = friendCard.querySelector("a").lastElementChild;
-    lastP.innerText =
-      friendData.source === "incoming"
-        ? "Incoming Request"
-        : "Outgoing Request";
-  }
-        */
+  `;
 
   return friendCard;
 }
@@ -174,21 +147,6 @@ function querySort(a, b) {
   return 0; //ids are the same then
 }
 
-//#region Friend Request
-function acceptRequest(userID) {
-  //TODO: Backend
-  console.log("accepting Request");
-}
-
-function rejectRequest(userID) {
-  //TODO: Backend
-  console.log("rejecting Request");
-}
-
-//#endregion
-
-//#region Page Select
-
 async function onPageSelect(pageNum) {
   contentHolder.classList.add("load");
 
@@ -214,7 +172,6 @@ async function onPageSelect(pageNum) {
 
   contentHolder.classList.remove("load");
 }
-//#endregion
 
 function onError(err) {
   console.log(err);
