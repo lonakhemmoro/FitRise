@@ -135,6 +135,8 @@ function updatePageSelector(pagePos) {
 
 export function deletePageButtons() {
   //Remove event listeners
+  if (!holderElement) return;
+
   const numButtons = holderElement.querySelectorAll("ol li button");
   numButtons.forEach((element) => {
     element.remove();
