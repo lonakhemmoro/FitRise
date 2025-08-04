@@ -1,10 +1,13 @@
 /* Base styles */
 body {
-  font-family: "Segoe UI", sans-serif;
   background-color: #f5f8fa;
   margin: 0;
   padding: 0;
   color: #333;
+}
+
+main {
+  font-family: "Segoe UI", sans-serif;
 }
 
 .container {
