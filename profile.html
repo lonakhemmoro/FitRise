@@ -1,100 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Profile - FitRise</title>
-  <link rel="stylesheet" href="styles/style.css">
-</head>
-<body>
-  <div id="header-placeholder"></div>
-  <main>
-    <div class="container">
-      <div class="profile-header">
-        <div>
-          <h2 id="user-name">John Doe</h2>
-          <div class="info" id="user-username">@johndoe</div>
-          <div class="info" id="user-email">john@example.com</div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Profile - FitRise</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/profile.css" />
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <main>
+      <div class="container">
+        <div class="profile-header">
+          <div>
+            <h2 id="user-name">John Doe</h2>
+            <div class="info" id="user-username">@johndoe</div>
+            <div class="info" id="user-email">john@example.com</div>
+          </div>
+          <button id="edit-profile">Edit Profile</button>
         </div>
-        <button id="edit-profile">Edit Profile</button>
+
+        <div class="section health-info">
+          <div><strong>Age:</strong> <span id="user-age">30</span></div>
+          <div><strong>Height:</strong> <span id="user-height">6'0"</span></div>
+          <div>
+            <strong>Weight:</strong> <span id="user-weight">170 lbs</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="label">Points</div>
+            <div class="value" id="user-points">2,500</div>
+          </div>
+          <div class="card">
+            <div class="label">Badge</div>
+            <div class="value" id="user-badge">Streak Champion</div>
+          </div>
+          <div class="card">
+            <div class="label">Streak</div>
+            <div class="value" id="user-streak">10 days</div>
+          </div>
+          <div class="card">
+            <div class="label">Last Active</div>
+            <div class="value" id="user-last-active">April 2, 2025</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Your Current Goals <button id="edit-goals">Edit</button></h3>
+          <ul class="goals-list">
+            <li>Steps: <span id="goal-steps">10,000</span></li>
+            <li>Water: <span id="goal-water">8 cups</span></li>
+            <li>Sleep: <span id="goal-sleep">7 hrs</span></li>
+          </ul>
+        </div>
       </div>
+    </main>
 
-      <div class="section health-info">
-        <div><strong>Age:</strong> <span id="user-age">30</span></div>
-        <div><strong>Height:</strong> <span id="user-height">6'0"</span></div>
-        <div><strong>Weight:</strong> <span id="user-weight">170 lbs</span></div>
-      </div>
+    <script>
+      const user = {
+        name: "Example Name",
+        username: "example username",
+        email: "example@example.com",
+        age: "user age",
+        height: 'user height"',
+        weight: "user weight lbs",
+        points: 5000,
+        badge: "example badge",
+        streak: "10 days",
+        lastActive: "example last active date",
+        goals: {
+          steps: "example steps",
+          water: "example water cups",
+          sleep: "example sleep hrs",
+        },
+      };
 
-      <div class="cards">
-        <div class="card">
-          <div class="label">Points</div>
-          <div class="value" id="user-points">2,500</div>
-        </div>
-        <div class="card">
-          <div class="label">Badge</div>
-          <div class="value" id="user-badge">Streak Champion</div>
-        </div>
-        <div class="card">
-          <div class="label">Streak</div>
-          <div class="value" id="user-streak">10 days</div>
-        </div>
-        <div class="card">
-          <div class="label">Last Active</div>
-          <div class="value" id="user-last-active">April 2, 2025</div>
-        </div>
-      </div>
+      document.getElementById("user-name").textContent = user.name;
+      document.getElementById(
+        "user-username"
+      ).textContent = `@${user.username}`;
+      document.getElementById("user-email").textContent = user.email;
+      document.getElementById("user-age").textContent = user.age;
+      document.getElementById("user-height").textContent = user.height;
+      document.getElementById("user-weight").textContent = user.weight;
+      document.getElementById("user-points").textContent =
+        user.points.toLocaleString();
+      document.getElementById("user-badge").textContent = user.badge;
+      document.getElementById("user-streak").textContent = user.streak;
+      document.getElementById("user-last-active").textContent = user.lastActive;
+      document.getElementById("goal-steps").textContent =
+        user.goals.steps.toLocaleString();
+      document.getElementById("goal-water").textContent = user.goals.water;
+      document.getElementById("goal-sleep").textContent = user.goals.sleep;
 
-      <div class="section">
-        <h3>Your Current Goals <button id="edit-goals">Edit</button></h3>
-        <ul class="goals-list">
-          <li>Steps: <span id="goal-steps">10,000</span></li>
-          <li>Water: <span id="goal-water">8 cups</span></li>
-          <li>Sleep: <span id="goal-sleep">7 hrs</span></li>
-        </ul>
-      </div>
-    </div>
-  </main>
-
-  <script>
-
-    const user = {
-      name: 'Example Name',
-      username: 'example username',
-      email: 'example@example.com',
-      age: 'user age',
-      height: "user height\"",
-      weight: 'user weight lbs',
-      points: 5000,
-      badge: 'example badge',
-      streak: '10 days',
-      lastActive: 'example last active date',
-      goals: {
-        steps: 'example steps',
-        water: 'example water cups',
-        sleep: 'example sleep hrs'
-      }
-    };
-
-    document.getElementById('user-name').textContent = user.name;
-    document.getElementById('user-username').textContent = `@${user.username}`;
-    document.getElementById('user-email').textContent = user.email;
-    document.getElementById('user-age').textContent = user.age;
-    document.getElementById('user-height').textContent = user.height;
-    document.getElementById('user-weight').textContent = user.weight;
-    document.getElementById('user-points').textContent = user.points.toLocaleString();
-    document.getElementById('user-badge').textContent = user.badge;
-    document.getElementById('user-streak').textContent = user.streak;
-    document.getElementById('user-last-active').textContent = user.lastActive;
-    document.getElementById('goal-steps').textContent = user.goals.steps.toLocaleString();
-    document.getElementById('goal-water').textContent = user.goals.water;
-    document.getElementById('goal-sleep').textContent = user.goals.sleep;
-
-    document.getElementById('edit-profile').addEventListener('click', () => {
-      alert('Open profile settings...');
-    });
-    document.getElementById('edit-goals').addEventListener('click', () => {
-      alert('Open goals editor...');
-    });
-  </script>
-  <script src="js/main.js"></script>
-</body>
+      document.getElementById("edit-profile").addEventListener("click", () => {
+        alert("Open profile settings...");
+      });
+      document.getElementById("edit-goals").addEventListener("click", () => {
+        alert("Open goals editor...");
+      });
+    </script>
+    <script src="js/main.js"></script>
+  </body>
 </html>
