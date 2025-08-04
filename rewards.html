@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Rewards - FitRise</title>
-  <link rel="stylesheet" href="styles/style.css" />
-</head>
-<body>
-  <!-- Header -->
-  <div id="header-placeholder"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Rewards - FitRise</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/skeleton.css" />
+    <link rel="stylesheet" href="styles/modal.css" />
 
-  <main class="dashboard">
-    <div class="card">
-      <h2>🎖️ Badges Earned</h2>
-      <p>You currently have <span id="badges">0</span> badges.</p>
-      <ul>
-        <li>500 pts – Bronze Badge</li>
-        <li>1000 pts – Silver Badge</li>
-        <li>2000 pts – Gold Badge</li>
-        <li>5000 pts – Premium Badge</li>
-      </ul>
-    
-    </div>
+    <script src="/js/rewards.js" type="module" defer></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
 
-    <div class="card">
-      <h2>🏆 Points Summary</h2>
-      <p>You have <span id="points">0</span> points.</p>
-    </div>
+    <main class="dashboard">
+      <div class="card">
+        <h2>🎖️ Badges Earned</h2>
+        <p class="skeleton-text">
+          You currently have <span id="badges">0</span> badges.
+        </p>
+        <ul>
+          <li class="skeleton-text">500 pts – Bronze Badge</li>
+          <!--
+          <li>1000 pts – Silver Badge</li>
+          <li>2000 pts – Gold Badge</li>
+          <li>5000 pts – Premium Badge</li>
+          -->
+        </ul>
+      </div>
 
-    <div class="card">
-  <h2>🎖️ Your Rewards</h2>
-  <p>Total Points: <span id="rewardPoints">0</span></p>
+      <div class="card">
+        <h2>🏆 Points Summary</h2>
+        <p class="skeleton-text">You have <span id="points">0</span> points.</p>
+      </div>
 
-  <!-- ✅ Progress bar -->
-<p>Next badge: Gold Badge (2000 pts)</p>
-<progress value="1200" max="2000"></progress>
+      <div class="card">
+        <h2>🎖️ Your Rewards</h2>
+        <p class="skeleton-text">
+          Total Points: <span id="rewardPoints">0</span>
+        </p>
 
-</div>
-<div class="badge">
-        <img src="images/bronze.png" alt="Bronze Badge" class="badge-image">
+        <!-- ✅ Progress bar -->
+        <p class="skeleton-text">Next badge: Gold Badge (2000 pts)</p>
+        <progress value="1200" max="2000"></progress>
+      </div>
+      <div class="badge skeleton">
+        <!--
+        <img src="images/bronze.png" alt="Bronze Badge" class="badge-image" />
         <p>Bronze Badge – Earned on 6-10-2025</p>
-  </div>
+      --></div>
+    </main>
 
-  </main>
-
-  <script src="js/main.js"></script>
-  
-</body>
+    <script src="js/main.js"></script>
+  </body>
 </html>
-
