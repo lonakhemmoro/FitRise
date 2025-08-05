@@ -1,5 +1,6 @@
 import supabase from "./modules/supabase.js";
 import createModal from "./modules/feedback/createModal.js";
+import numberWithCommas from "./modules/numberWithCommas.js";
 
 let userID = "";
 
@@ -50,7 +51,7 @@ async function init() {
     return;
   }
   const pointsPTag = document.getElementById("points");
-  pointsPTag.innerText = userPoints;
+  pointsPTag.innerText = numberWithCommas(userPoints);
   pointsPTag.parentElement.classList.remove("skeleton-text");
 
   //Your Rewards
@@ -81,7 +82,7 @@ function displayBadgesEarned(dataArr) {
   ulTag.innerHTML = "";
   dataArr.forEach((element) => {
     ulTag.innerHTML += `
-        <li>${element.points} pts - ${element.name}</li>`;
+        <li>${numberWithCommas(element.points)} pts - ${element.name}</li>`;
   });
 }
 
@@ -105,7 +106,7 @@ function displayYourRewards(points, badgeData) {
   }
 
   nextBadgeP.innerText = `
-    Next badge: ${badgeData.name} (${badgeData.points} pts)
+    Next badge: ${badgeData.name} (${numberWithCommas(badgeData.points)} pts)
     `;
 
   const progressTag = yourRewardsCard.querySelector("progress");
@@ -147,11 +148,7 @@ function displayBadgePhoto(badgeData) {
   }
 
   const earnedDate = new Date(badgeData.date_awarded);
-  const dateStr = earnedDate.toLocaleDateString("en-US", {
-    year: "numeric",
-    day: "numeric",
-    month: "numeric",
-  });
+  const dateStr = earnedDate.toLocaleDateString("en-US");
 
   badgeImageDiv.innerHTML = `
   <img src="images/${imgSourceStr}" alt="${badgeData.name}" class="badge-image" />
