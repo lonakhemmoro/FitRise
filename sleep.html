@@ -11,6 +11,25 @@
     <link rel="stylesheet" href="styles/skeleton.css" />
     <script src="./js/main.js"></script>
     <script src="./js/daily-activity.js" type="module" defer></script>
+    <style>
+      /* Inline styles for quick demo – you can move this to your CSS file */
+      .sleep-tips {
+        background-color: #f0f8ff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .sleep-tips h3 {
+        margin-top: 0;
+      }
+
+      .sleep-tips ul {
+        padding-left: 20px;
+      }
+    </style>
   </head>
   <body>
     <div id="header-placeholder"></div>
@@ -24,17 +43,27 @@
           <p id="todays-value" class="skeleton-text">0 / 8,000 steps</p>
           <hr />
           <form>
-            <span
-              ><span>+</span>
-              <label class="hide-label" for="value-input"
-                >Number to increase daily activity by:
+            <span>
+              <span>+</span>
+              <label class="hide-label" for="value-input">
+                Number to increase daily activity by:
               </label>
-              <input type="number" id="value-input" min="0" placeholder="0"
-            /></span>
+              <input type="number" id="value-input" min="0" placeholder="0" />
+            </span>
             <div>
               <button type="submit" id="add-value">Add Steps</button>
             </div>
           </form>
+
+          <!--Sleep Tips-->
+          <div class="sleep-tips">
+            <h3>Helpful Sleep Tips</h3>
+            <ul>
+              <li>Stick to a consistent sleep schedule—even on weekends.</li>
+              <li>Limit screen time an hour before bed to improve sleep quality.</li>
+              <li>Aim for 7–9 hours of sleep per night if you're an adult. Teens need 8–10 hours, and school-age children need 9–12 hours.</li>
+            </ul>
+          </div>
         </main>
       </div>
       <aside>
@@ -67,8 +96,8 @@
               Start your new goal using a recommended value based on your past
               goals
             </p>
-            <span>Recommended Value: </span
-            ><span id="goal-recommended-value">10,009</span>
+            <span>Recommended Value: </span>
+            <span id="goal-recommended-value">10,009</span>
             <button id="goal-start-recommended">Start Goal</button>
           </div>
           <div class="goal-divider">
@@ -79,9 +108,9 @@
           <div>
             <p>Set a custom goal that fits you best</p>
             <form>
-              <label class="hide-label" for="goal-manual-input"
-                >New Goal Value:</label
-              >
+              <label class="hide-label" for="goal-manual-input">
+                New Goal Value:
+              </label>
               <input
                 id="goal-manual-input"
                 type="number"
