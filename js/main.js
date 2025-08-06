@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.text())
     .then((data) => {
       document.getElementById("header-placeholder").innerHTML = data;
+
+      // Now that header is loaded, attach the nav toggle event
+      const navToggle = document.getElementById("navToggle");
+      const mainNav = document.getElementById("mainNav");
+      if (navToggle && mainNav) {
+        navToggle.addEventListener("click", function () {
+          mainNav.classList.toggle("open");
+        });
+      }
     });
 });
 
