@@ -7,14 +7,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     .then((data) => {
       document.getElementById("header-placeholder").innerHTML = data;
     });
-
-  // Only run adjustGoals on the home page
-  if (window.location.pathname.includes("index.html")) {
-    const currentUser = JSON.parse(localStorage.getItem("user"));
-    if (currentUser && currentUser.id) {
-      await adjustGoals(currentUser.id);
-    }
-  }
 });
 
 // DOM elements

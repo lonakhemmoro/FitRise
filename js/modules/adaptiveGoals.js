@@ -38,9 +38,8 @@ export async function adjustGoals(goalData) {
     // Update the goal record with new adjustment info
     const { error: goalUpdateError } = await supabase
       .from('goals')
-      .update({ 
-        value: newValue, 
-        adjusted_by: adjustment, 
+      .update({  
+        adjusted_by: newValue / goalValue, 
         date_last_adjusted: todayDate 
       })
       .eq('id', goalID);
