@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile - FitRise</title>
     <link rel="stylesheet" href="styles/style.css" />
     <link rel="stylesheet" href="styles/profile.css" />
+    <link rel="stylesheet" href="styles/modal.css" />
+    <link rel="stylesheet" href="styles/skeleton.css" />
+    <script type="module" src="./js/main.js"></script>
+    <script src="./js/profile.js" type="module" defer></script>
   </head>
   <body>
     <div id="header-placeholder"></div>
@@ -18,7 +22,9 @@
             <div class="info" id="user-username">@johndoe</div>
             <div class="info" id="user-email">john@example.com</div>
           </div>
-          <button id="edit-profile">Edit Profile</button>
+          <div id="button-holder">
+            <button id="edit-profile">Edit Profile</button>
+          </div>
         </div>
 
         <div class="section health-info">
@@ -49,7 +55,6 @@
         </div>
 
         <div class="section">
-          <h3>Your Current Goals <button id="edit-goals">Edit</button></h3>
           <ul class="goals-list">
             <li>Steps: <span id="goal-steps">10,000</span></li>
             <li>Water: <span id="goal-water">8 cups</span></li>
@@ -58,51 +63,5 @@
         </div>
       </div>
     </main>
-
-    <script>
-      const user = {
-        name: "Example Name",
-        username: "example username",
-        email: "example@example.com",
-        age: "user age",
-        height: 'user height"',
-        weight: "user weight lbs",
-        points: 5000,
-        badge: "example badge",
-        streak: "10 days",
-        lastActive: "example last active date",
-        goals: {
-          steps: "example steps",
-          water: "example water cups",
-          sleep: "example sleep hrs",
-        },
-      };
-
-      document.getElementById("user-name").textContent = user.name;
-      document.getElementById(
-        "user-username"
-      ).textContent = `@${user.username}`;
-      document.getElementById("user-email").textContent = user.email;
-      document.getElementById("user-age").textContent = user.age;
-      document.getElementById("user-height").textContent = user.height;
-      document.getElementById("user-weight").textContent = user.weight;
-      document.getElementById("user-points").textContent =
-        user.points.toLocaleString();
-      document.getElementById("user-badge").textContent = user.badge;
-      document.getElementById("user-streak").textContent = user.streak;
-      document.getElementById("user-last-active").textContent = user.lastActive;
-      document.getElementById("goal-steps").textContent =
-        user.goals.steps.toLocaleString();
-      document.getElementById("goal-water").textContent = user.goals.water;
-      document.getElementById("goal-sleep").textContent = user.goals.sleep;
-
-      document.getElementById("edit-profile").addEventListener("click", () => {
-        alert("Open profile settings...");
-      });
-      document.getElementById("edit-goals").addEventListener("click", () => {
-        alert("Open goals editor...");
-      });
-    </script>
-    <script type="module" src="js/main.js"></script>
   </body>
 </html>

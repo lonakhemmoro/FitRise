@@ -41,8 +41,7 @@ main {
 }
 
 /* Buttons */
-#edit-profile,
-#edit-goals {
+.container button {
   background-color: #007bff;
   color: white;
   padding: 0.4rem 1rem;
@@ -53,8 +52,7 @@ main {
   transition: background-color 0.2s ease;
 }
 
-#edit-profile:hover,
-#edit-goals:hover {
+.container button:hover {
   background-color: #0056b3;
 }
 
@@ -132,4 +130,24 @@ main {
 
 .goals-list li {
   padding: 0.3rem 0;
+}
+
+/*Dynamic (Friend-Related) Buttons*/
+button.btn-delete {
+  background-color: revert;
+  background-color: #dc3545;
+  transition: revert;
+  transition: background-color 0.2s ease;
+}
+button.btn-delete:hover {
+  background-color: #a92734;
+}
+
+button.btn-accept {
+  background-color: revert;
+  background-color: #15c371;
+  transition: background-color 0.2s ease;
+}
+button.btn-accept:hover {
+  background-color: #0b8e51;
 }
