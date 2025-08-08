@@ -6,7 +6,6 @@ import {
 } from "./modules/pageSelectRelated.js";
 import stringToDate from "./modules/stringToDate.js";
 import supabase from "./modules/supabase.js";
-import createHeader from "./modules/createHeader.js";
 import createModal from "./modules/feedback/createModal.js";
 
 let userID = "";
@@ -15,22 +14,105 @@ let valueUnit = "";
 
 const contentHolder = document.querySelector(".content-holder");
 
-createHeader();
 init();
 async function init() {
-  //TODO: Check if logged in
-
   const { data, error } = await supabase.auth.getUser();
-  userID = data.user.id;
-  if (error) {
-    onError(error);
+  if (error || !data.user) {
+    //TODO: Redirect to the login page
+    return;
   }
+  userID = data.user.id;
 
   await newQueryInit();
   document.querySelector("form").onchange = async () => newQueryInit();
 }
 
-function createGoalCard(goalElement) {
+function createGoalCard(goalElement, dailyArr) {
+  const goalCard = document.createElement("goal-card");
+  goalCard.classList.add("goal-card");
+  goalCard.innerHTML = `
+    <div class="goal-card">
+        <p class="goal-period"></p>
+        <div class="daily-holder-parent">
+        </div>
+    <div>
+    `;
+
+  /*Template
+    <div class="goal-card">
+          <p class="goal-period">Month Day - Month Day 2025</p>
+          <div class="daily-holder-parent">
+            <p class="goal-status">Status: Failed</p>
+            <div class="daily-holder">
+              <p>July 1</p>
+              <p>9000/9000 steps</p>
+            </div>
+            <div class="daily-holder">
+              <p>July 2</p>
+              <p>9000/9000 steps</p>
+            </div>
+            <div class="daily-holder">
+              <p>July 3</p>
+              <p>9000/9000 steps</p>
+            </div>
+            <div class="daily-holder">
+              <p>July 4</p>
+              <p>9000/9000 steps</p>
+            </div>
+          </div>
+        </div>
+    */
+
+  //Get goal period
+  let startDate = stringToDate(dailyArr[0].date);
+  startDate = startDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
+  let endDate = stringToDate(dailyArr[dailyArr.length - 1].date);
+  endDate = endDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+  goalCard.querySelector(
+    ".goal-period"
+  ).innerText = `${startDate} - ${endDate}`;
+
+  //Make the rest of the card
+  const dailyHolderParent = goalCard.querySelector(".daily-holder-parent");
+
+  let statusString = "";
+  if (goalElement.status === "fail") {
+    statusString = "Failed";
+  } else if (goalElement.status === "complete") {
+    statusString = "Completed";
+  } else if (goalElement.status === "active") {
+    statusString = "Active";
+  }
+  dailyHolderParent.innerHTML += `<p class="goal-status">Status: ${statusString}</p>`;
+
+  const dailyOptions = {
+    month: "long",
+    day: "numeric",
+  };
+  dailyArr.forEach((element) => {
+    let dateStr = stringToDate(element.date);
+    dateStr = dateStr.toLocaleDateString("en-US", dailyOptions);
+    dailyHolderParent.innerHTML += `
+    <div class="daily-holder">
+        <p>${dateStr}</p>
+        <p>${numberWithCommas(element.value)} / ${numberWithCommas(
+      element.adjusted_goal_value
+    )} ${valueUnit}</p>
+    </div>
+    `;
+  });
+
+  document.querySelector(".content-holder").appendChild(goalCard);
+}
+
+function createGoalCard0(goalElement) {
   const { daily_activities: dailyArr } = goalElement;
 
   const goalCard = document.createElement("goal-card");
@@ -95,7 +177,7 @@ function createGoalCard(goalElement) {
     <div class="daily-holder">
         <p>${dateStr}</p>
         <p>${numberWithCommas(element.value)} / ${numberWithCommas(
-      goalElement.value
+      element.adjusted_goal_value
     )} ${valueUnit}</p>
     </div>
     `;
@@ -104,7 +186,7 @@ function createGoalCard(goalElement) {
   document.querySelector(".content-holder").appendChild(goalCard);
 }
 
-function getGoalPeriod(goalDate) {
+function getGoalPeriod0(goalDate) {
   const startDate = stringToDate(goalDate);
   const endDate = new Date(startDate);
   endDate.setDate(endDate.getDate() + 3);
@@ -134,17 +216,12 @@ function getSupabaseQuery(
   let supabaseQuery = supabase.from("goals");
 
   if (isInitial) {
-    supabaseQuery = supabaseQuery.select(
-      "date, value, status, id, daily_activities!inner(value, date) ",
-      {
-        count: "exact",
-        head: false,
-      }
-    );
+    supabaseQuery = supabaseQuery.select("status, id ", {
+      count: "exact",
+      head: false,
+    });
   } else {
-    supabaseQuery = supabaseQuery.select(
-      "date, value, status, id, daily_activities!inner(value, date) "
-    );
+    supabaseQuery = supabaseQuery.select("status, id ");
   }
 
   supabaseQuery = supabaseQuery
@@ -164,7 +241,6 @@ function getSupabaseQuery(
   }
 
   supabaseQuery = supabaseQuery.order("id", { ascending: true });
-
   return supabaseQuery;
 }
 
@@ -178,17 +254,36 @@ async function onPageSelect(num) {
 
   contentHolder.classList.add("load");
 
-  const { data, error } = await supabaseQuery.range(rangeMin, rangeMax);
+  const { data: goalData, error: goalErr } = await supabaseQuery.range(
+    rangeMin,
+    rangeMax
+  );
 
-  if (error) {
-    onError(error);
+  if (goalErr) {
+    onError(goalErr);
     return;
   }
 
+  //Query backend for the daily activities for those goals
+  const arr = [];
+  for (let i = 0; i < goalData.length; i++) {
+    const { data: dailyData, error: dailyErr } = await supabase
+      .from("daily_activities")
+      .select("value, date, adjusted_goal_value")
+      .eq("goal_id", goalData[i].id)
+      .order("date", { ascending: true });
+    if (dailyErr) {
+      console.log("Err in for loop");
+      onError(dailyErr);
+      return;
+    }
+    arr.push(dailyData);
+  }
+
   contentHolder.innerHTML = "";
-  data.forEach((element) => {
-    createGoalCard(element);
-  });
+  for (let i = 0; i < arr.length; i++) {
+    createGoalCard(goalData[i], arr[i]);
+  }
 
   contentHolder.classList.remove("load");
 }
@@ -223,13 +318,16 @@ async function newQueryInit() {
     false
   );
 
-  //Query Backend
+  //Query Backend for goals
   contentHolder.classList.add("load");
 
-  const { data, count, error } = await initSupabaseQuery.range(0, 5);
-
-  if (error) {
-    onError(error);
+  const {
+    data: goalData,
+    count,
+    error: goalErr,
+  } = await initSupabaseQuery.range(0, 5);
+  if (goalErr) {
+    onError(goalErr);
     return;
   }
 
@@ -243,11 +341,27 @@ async function newQueryInit() {
     setPageClick(onPageSelect);
   }
 
+  //Query backend for the daily activities for those goals
+  const arr = [];
+  for (let i = 0; i < goalData.length; i++) {
+    const { data: dailyData, error: dailyErr } = await supabase
+      .from("daily_activities")
+      .select("value, date, adjusted_goal_value")
+      .eq("goal_id", goalData[i].id)
+      .order("date", { ascending: true });
+    if (dailyErr) {
+      console.log("Err in for loop");
+      onError(dailyErr);
+      return;
+    }
+    arr.push(dailyData);
+  }
+
   //Populate the first page with data
   contentHolder.innerHTML = "";
-  data.forEach((element) => {
-    createGoalCard(element);
-  });
+  for (let i = 0; i < arr.length; i++) {
+    createGoalCard(goalData[i], arr[i]);
+  }
 
   contentHolder.classList.remove("load");
 }
