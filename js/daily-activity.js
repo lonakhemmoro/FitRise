@@ -3,6 +3,7 @@ import createModal from "./modules/feedback/createModal.js";
 import stringToDate from "./modules/stringToDate.js";
 import supabase from "./modules/supabase.js";
 import numberWithCommas from "./modules/numberWithCommas.js";
+import { adjustGoals } from "./modules/adaptiveGoals.js";
 
 const dailyInput = document.getElementById("value-input");
 const addValueBtn = document.getElementById("add-value");
@@ -13,7 +14,6 @@ const goalStartRecommendedBtn = document.getElementById(
 const exitGoalBtn = document.getElementById("goal-exit");
 
 let userID, goalID;
-
 let valueUnit = "";
 let goalTypeID = -1;
 
@@ -36,8 +36,7 @@ async function init() {
   getUnit();
 
   //Get the current the current goal if it's still active
-  const currentDate = new Date().toLocaleDateString("en-US");
-  let weekAgoDate = new Date(currentDate);
+  let weekAgoDate = new Date();
   weekAgoDate.setDate(weekAgoDate.getDate() - 7);
   weekAgoDate = weekAgoDate.toLocaleDateString("en-US");
 
@@ -62,7 +61,11 @@ async function init() {
     //STATE_DAILY_ACTIVITY
     goalID = goalData.id;
 
-    //TODO: Call the adaptive goal system
+    //Check if the adpative goal system was already called today
+    let currDate = new Date();
+    if (!isSameDate(currDate, stringToDate(goalData.date_last_adjusted))) {
+      await adjustGoals(goalData);
+    }
 
     const { data: dailyData, error: dailyError } = await supabase
       .from("daily_activities")
@@ -179,8 +182,6 @@ async function addValue(evnt) {
     return;
   }
 
-  //Get the previous value for today's daily entry
-
   addValueBtn.disabled = true;
 
   //Update Streak. SQL Function
@@ -191,7 +192,8 @@ async function addValue(evnt) {
     addValueBtn.disabled = false;
     return;
   }
-  //Update today's value in the database
+
+  //Update today's value in the db. SQL Function
   const { error: updateErr } = await supabase.rpc("update_daily_entry", {
     offset_value: value,
     goal_id_arg: goalID,
@@ -258,7 +260,8 @@ async function STATE_GOAL_START() {
   //If prevGoalErr, nothing happens. It's fine. We just won't have the recommended value.
   //Get and Display recommended value
   if (!prevGoalErr) {
-    const recommendedValue = getRecommendedValue(prevGoal);
+    let recommendedValue = getRecommendedValue(prevGoal);
+    recommendedValue = Math.round(recommendedValue);
     const goalRecommendedHTML = document.getElementById(
       "goal-recommended-value"
     );
