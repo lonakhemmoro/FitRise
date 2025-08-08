@@ -15,29 +15,43 @@
   <body>
     <div id="header-placeholder"></div>
 
-    <div class="content">
-      <div>
-        <h2>Water Intake</h2>
+    <div class="content" style="display: flex; gap: 2rem;">
+      <div style="flex: 1;">
+        <h2 style="color: #007bff;">💧 Water Intake</h2>
 
-        <main>
+        <main style="display: flex; flex-direction: column; gap: 1rem;">
           <p>Today's Water:</p>
-          <p id="todays-value" class="skeleton-text">0 / 8,000 steps</p>
+          <p id="todays-value" class="skeleton-text" style="font-size: 1.5rem;">0 / 19 cups</p>
           <hr />
-          <form>
-            <span
-              ><span>+</span>
-              <label class="hide-label" for="value-input"
-                >Number to increase daily activity by:
+
+          <!--Daily Activity Form-->
+          <form style="margin-top: 1rem;">
+            <span>
+              <span style="font-size: 1.2rem; font-weight: bold;">+</span>
+              <label class="hide-label" for="value-input">
+                Number to increase daily activity by:
               </label>
-              <input type="number" id="value-input" min="0" placeholder="0"
-            /></span>
+              <input type="number" id="value-input" min="0" placeholder="0" />
+            </span>
             <div>
-              <button type="submit" id="add-value">Add Steps</button>
+              <button type="submit" id="add-value" style="margin-top: 1rem;">Add cups</button>
             </div>
           </form>
+
+          <!--Water Tips Section below the button-->
+          <section class="tips" style="background-color: #e8f8ff; padding: 1rem; border-radius: 10px;">
+            <h3 style="margin-top: 0; color: #0077b6;">💧 Tips for Staying Hydrated</h3>
+            <ul style="padding-left: 1.2rem; margin: 0;">
+              <li>Start your morning with a glass of water to jumpstart hydration.</li>
+              <li>Carry a reusable water bottle and sip throughout the day.</li>
+              <li>Eat water-rich foods like cucumbers, oranges, and lettuce.</li>
+            </ul>
+          </section>
         </main>
       </div>
-      <aside>
+
+      <!-- Sidebar -->
+      <aside style="flex: 0 0 250px;">
         <h2 id="goal-period" class="skeleton-text">Goal: July 4 - July 8</h2>
         <div class="daily-card">
           <p class="skeleton-text">July 1</p>
@@ -58,6 +72,7 @@
       </aside>
     </div>
 
+    <!-- Goal Setup Modal -->
     <div id="goal-create" class="closed">
       <div id="goal-border">
         <h2>Start Your New Goal</h2>
