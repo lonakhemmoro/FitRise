@@ -1,8 +1,8 @@
-//TODO: Remove main.js and goals.js from the html
-
 import displayErrBorder from "./modules/feedback/displayErrBorder.js";
 import createModal from "./modules/feedback/createModal.js";
 import stringToDate from "./modules/stringToDate.js";
+import supabase from "./modules/supabase.js";
+import numberWithCommas from "./modules/numberWithCommas.js";
 
 const dailyInput = document.getElementById("value-input");
 const addValueBtn = document.getElementById("add-value");
@@ -12,119 +12,158 @@ const goalStartRecommendedBtn = document.getElementById(
 );
 const exitGoalBtn = document.getElementById("goal-exit");
 
+let userID, goalID;
+
 let valueUnit = "";
 let goalTypeID = -1;
 
 let dailyIndex = -1;
 
-const dummyData = {
-  goal: {
-    value: 19,
-    date: "2025-07-26",
-  },
-  daily: [
-    {
-      date: "2025-07-26",
-      value: 10,
-    },
-    {
-      date: "2025-07-27",
-      value: 12,
-    },
-    {
-      date: "2025-07-28",
-      value: 2,
-    },
-    {
-      date: "2025-07-29",
-      value: 0,
-    },
-  ],
-};
-
 init();
 async function init() {
   addValueBtn.disabled = true;
+  goalStartRecommendedBtn.disabled = true;
+  goalStartManualBtn.disabledd = true;
 
-  //TODO: Check if logged in
+  //Check if logged in
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) {
+    //TODO: Redirect to the login page
+    return;
+  }
+  userID = data.user.id;
 
   getUnit();
 
-  //TODO: backend call
-  //If you want to look at the different screens/states change status
-  const response = { status: 200 }; //fake backend call
+  //Get the current the current goal if it's still active
+  const currentDate = new Date().toLocaleDateString("en-US");
+  let weekAgoDate = new Date(currentDate);
+  weekAgoDate.setDate(weekAgoDate.getDate() - 7);
+  weekAgoDate = weekAgoDate.toLocaleDateString("en-US");
 
-  //Change page state based on backend response
-  const { status: responseStatus } = response;
+  const { data: goalData, error: goalError } = await supabase
+    .from("goals")
+    .select("*")
+    .eq("user_id", userID)
+    .eq("goal_type_id", goalTypeID)
+    .gt("date", weekAgoDate)
+    .limit(1)
+    .maybeSingle();
 
-  if (responseStatus === 200) {
-    STATE_DAILY_ACTIVITY_init(dummyData);
-  } else if (responseStatus === 404) {
-    STATE_GOAL_START();
-  } else if (responseStatus === 500 || responseStatus === 0) {
+  if (goalError) {
     STATE_BACKEND_ERROR();
+    return;
   }
+
+  if (!goalData) {
+    //STATE_GOAL_START
+    STATE_GOAL_START();
+  } else {
+    //STATE_DAILY_ACTIVITY
+    goalID = goalData.id;
+
+    //TODO: Call the adaptive goal system
+
+    const { data: dailyData, error: dailyError } = await supabase
+      .from("daily_activities")
+      .select("*")
+      .eq("goal_id", goalID)
+      .order("date", { ascending: true });
+    if (dailyError) {
+      STATE_BACKEND_ERROR();
+      return;
+    }
+
+    STATE_DAILY_ACTIVITY_init(dailyData);
+  }
+  return;
 }
 
 //#region STATE DAILY ACTIVITIY
-function STATE_DAILY_ACTIVITY_init(responseBody) {
+function STATE_DAILY_ACTIVITY_init(dailyArr) {
   addValueBtn.onclick = (evnt) => addValue(evnt);
   addValueBtn.disabled = false;
 
-  const { goal, daily } = responseBody;
-
   const aside = document.querySelector("aside");
-  createGoalPeriod(aside, goal);
-  createCards(aside, goal.value, daily);
-  getTodaysDaily(goal.value, daily);
+  createGoalPeriod(aside, dailyArr[0], dailyArr[dailyArr.length - 1]);
+  createCards(aside, dailyArr);
+  getTodaysDaily(aside, dailyArr);
 }
 
-function createGoalPeriod(aside, goalData) {
-  const startDate = stringToDate(goalData.date);
-  const endDate = new Date(startDate);
-  endDate.setDate(endDate.getDate() + 3);
-  const goalPeriod = `Goal: ${monthName(
-    startDate.getMonth()
-  )} ${startDate.getDate()} - ${monthName(
-    endDate.getMonth()
-  )} ${endDate.getDate()}`;
+function createGoalPeriod(aside, startDaily, endDaily) {
+  let startDate = stringToDate(startDaily.date);
+  startDate = startDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+  let endDate = stringToDate(endDaily.date);
+  endDate = endDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+  const goalPeriod = `Goal: ${startDate} - ${endDate}`;
 
   aside.innerHTML = `<h2 id="goal-period">${goalPeriod}</h2>`;
 }
 
-function createCards(aside, goalValue, dailyActsArr) {
-  const goalValueStr = numberWithCommas(goalValue);
-  dailyActsArr.forEach((element) => {
-    const date = stringToDate(element.date);
-    const month = monthName(date.getMonth());
-    const day = date.getDate();
+function createCards(aside, dailyArr) {
+  dailyArr.forEach((element) => {
+    let date = stringToDate(element.date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
     const value = numberWithCommas(element.value);
+    const goalValue = numberWithCommas(element.adjusted_goal_value);
 
     aside.innerHTML += `
     <div class="daily-card">
-      <p>${month} ${day}</p>
-      <p>${value} / ${goalValueStr} ${valueUnit}</p>
+      <p>${date}</p>
+      <p>${value} / ${goalValue} ${valueUnit}</p>
     </div>
     `;
   });
 }
 
-function getTodaysDaily(goalValue, dailyActsArr) {
-  const currDate = new Date().getDate();
+function isSameDate(dateOne, dateTwo) {
+  return (
+    dateOne.getFullYear() === dateTwo.getFullYear() &&
+    dateOne.getMonth() === dateTwo.getMonth() &&
+    dateOne.getDate() === dateTwo.getDate()
+  );
+}
+
+function getTodaysDaily(aside, dailyActsArr) {
+  const today = new Date();
+  dailyIndex = -1; // reset index
+
   for (let i = 0; i < dailyActsArr.length; i++) {
-    const dailyDate = stringToDate(dailyActsArr[i].date).getDate();
-    if (currDate === dailyDate) {
+    const dailyDate = stringToDate(dailyActsArr[i].date);
+    if (isSameDate(dailyDate, today)) {
       dailyIndex = i;
       break;
     }
   }
 
-  const todaysValue = dailyIndex > -1 ? dailyActsArr[dailyIndex].value : 0;
+  // If no entry found, create a new one for today
+  if (dailyIndex === -1) {
+    const newDateStr = today.toISOString().split("T")[0];
+    const newDailyObj = { date: newDateStr, value: 0, adjusted_goal_value: 0 };
+    dailyActsArr.push(newDailyObj);
+
+    // Add a new card to the UI
+    createCards(aside, [newDailyObj]);
+
+    dailyIndex = dailyActsArr.length - 1;
+  }
+
+  const { value: todaysValue, adjusted_goal_value: todaysGoalValue } =
+    dailyActsArr[dailyIndex];
 
   const todaysValueTextArea = document.getElementById("todays-value");
-  todaysValueTextArea.innerText = `${todaysValue} / ${numberWithCommas(
-    goalValue
-  )} ${valueUnit}`;
+  todaysValueTextArea.innerText = `${numberWithCommas(
+    todaysValue
+  )} / ${numberWithCommas(todaysGoalValue)} ${valueUnit}`;
   todaysValueTextArea.classList.remove("skeleton-text");
 }
 
@@ -140,15 +179,29 @@ async function addValue(evnt) {
     return;
   }
 
+  //Get the previous value for today's daily entry
+
   addValueBtn.disabled = true;
 
-  //TODO: Call backend
-
-  //Error handle
-  /*
-  If backend can't be reached
-      createModal("Can't connect to server. Please try again later", true);
-  */
+  //Update Streak. SQL Function
+  const { error: streakErr } = await supabase.rpc("update_streak");
+  if (streakErr) {
+    //Do not reveal the actual reason for error
+    createModal("Error logging activity. Please try again later", true);
+    addValueBtn.disabled = false;
+    return;
+  }
+  //Update today's value in the database
+  const { error: updateErr } = await supabase.rpc("update_daily_entry", {
+    offset_value: value,
+    goal_id_arg: goalID,
+    tz: getTimezone(),
+  });
+  if (updateErr) {
+    createModal("Error logging activity. Please try again later", true);
+    addValueBtn.disabled = false;
+    return;
+  }
 
   createModal("Successfully logged!");
   //Display changes without actually calling the backend
@@ -183,9 +236,46 @@ function hopefulUpdate(offsetValue) {
 //#endregion
 
 //#region STATE GOAL START
-function STATE_GOAL_START() {
-  goalStartManualBtn.onclick = () => createNewGoal(false);
-  goalStartRecommendedBtn.onclick = () => createNewGoal(true);
+async function STATE_GOAL_START() {
+  //Update the status of the previous goal
+  const { error: statusUpdateErr } = await supabase.rpc("update_prev_goal", {
+    goal_type: goalTypeID,
+  });
+  if (statusUpdateErr) {
+    STATE_BACKEND_ERROR();
+    return;
+  }
+
+  //Get the previous goal, so we can get the recommended value
+  const { data: prevGoal, error: prevGoalErr } = await supabase
+    .from("goals")
+    .select("id, value, adjusted_by")
+    .eq("user_id", userID)
+    .eq("goal_type_id", goalTypeID)
+    .order("id", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  //If prevGoalErr, nothing happens. It's fine. We just won't have the recommended value.
+  //Get and Display recommended value
+  if (!prevGoalErr) {
+    const recommendedValue = getRecommendedValue(prevGoal);
+    const goalRecommendedHTML = document.getElementById(
+      "goal-recommended-value"
+    );
+    goalRecommendedHTML.innerText = `${numberWithCommas(
+      recommendedValue
+    )} ${valueUnit}`;
+    goalRecommendedHTML.classList.remove("skeleton-text");
+    goalStartRecommendedBtn.onclick = (evnt) =>
+      createNewGoal(evnt, true, recommendedValue);
+    goalStartRecommendedBtn.disabled = false;
+  } else {
+    document.getElementById(
+      "goal-recommended-value"
+    ).innerText = `N/A - Error obtaining recommended goal value`;
+  }
+
+  goalStartManualBtn.onclick = (evnt) => createNewGoal(evnt, false, {});
   exitGoalBtn.onclick = () => closeGoalBox();
 
   document.querySelector("aside").innerHTML = "";
@@ -197,36 +287,49 @@ function STATE_GOAL_START() {
   startGoalBtn.classList.add("cta-button");
   startGoalBtn.onclick = () => openGoalBox();
   document.querySelector("main").appendChild(startGoalBtn);
-
-  //Get the recommended value and display it
-  const recommendedValue = numberWithCommas(10999);
-  document.getElementById(
-    "goal-recommended-value"
-  ).innerText = `${recommendedValue} ${valueUnit}`;
 }
 
-function createNewGoal(isRecommendedValue) {
-  //Validate
-  const input = document.getElementById("goal-manual-input");
-  const inputNum = parseInt(input.value);
-  displayErrBorder(input, false);
-  if (!isRecommendedValue) {
+async function createNewGoal(evnt, isRecommendedValue, recommendedValue) {
+  evnt.preventDefault();
+
+  let newGoalValue;
+  if (isRecommendedValue) {
+    newGoalValue = recommendedValue;
+  } else {
+    const input = document.getElementById("goal-manual-input");
+    const inputNum = parseInt(input.value);
+    displayErrBorder(input, false);
+    //Validate
     if (Number.isNaN(inputNum) || inputNum <= 0) {
       displayErrBorder(input, true);
+      return;
     }
+    newGoalValue = inputNum;
   }
 
   goalStartManualBtn.disabled = true;
   goalStartRecommendedBtn.disabled = true;
 
-  //TODO: Call the backend
-  console.log("Yipee");
-  //TODO: Reload the page if goal creation successful
-  //window.location.reload();
+  //Call  backend
+  const { error } = await supabase.rpc("create_goal", {
+    goal_type: goalTypeID,
+    goal_value: newGoalValue,
+    tz: getTimezone(),
+  });
+  //On error, just display a modal
+  if (error) {
+    createModal("Error creating new goal. Please try again later", true);
+    goalStartManualBtn.disabled = false;
+    goalStartRecommendedBtn.disabled = false;
+    return;
+  }
+
+  //Reload the page if goal creation successful
+  window.location.reload();
 
   //TODO: Remove when we enable the backend
-  goalStartManualBtn.disabled = false;
-  goalStartRecommendedBtn.disabled = false;
+  //goalStartManualBtn.disabled = false;
+  //goalStartRecommendedBtn.disabled = false;
 }
 
 function closeGoalBox() {
@@ -237,6 +340,22 @@ function closeGoalBox() {
 function openGoalBox() {
   const goalContainer = document.getElementById("goal-create");
   goalContainer.classList.remove("closed");
+}
+
+function getRecommendedValue(goalData) {
+  let recommendedValue;
+
+  //If goalData == null, means this is the user's first time on this goalType
+  if (!goalData) {
+    if (goalTypeID === 1)
+      recommendedValue = 11; //Recommended daily water intake for women
+    else if (goalTypeID === 2) recommendedValue = 8;
+    else recommendedValue = 10000; //Recomended amnt of steps for adults
+  } else {
+    //Get the last goal value and multiple it by its adjusted value
+    recommendedValue = goalData.value * goalData.adjusted_by;
+  }
+  return recommendedValue;
 }
 //#endregion
 
@@ -275,42 +394,8 @@ function getUnit() {
   addValueBtn.innerText = "Add " + valueUnit;
 }
 
-function numberWithCommas(x) {
-  //https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function monthName(number) {
-  //JS counts months starting from 0 (Jan == 0)
-  let actualNumber = number + 1;
-  switch (actualNumber) {
-    case 1:
-      return "Jan";
-    case 2:
-      return "Feb";
-    case 3:
-      return "Mar";
-    case 4:
-      return "Apr";
-    case 5:
-      return "May";
-    case 6:
-      return "June";
-    case 7:
-      return "July";
-    case 8:
-      return "Aug";
-    case 9:
-      return "Sept";
-    case 10:
-      return "Oct";
-    case 11:
-      return "Nov";
-    case 12:
-      return "Dec";
-    default:
-      return "Not a month";
-  }
+function getTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
 //#endregion
