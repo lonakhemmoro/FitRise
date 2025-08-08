@@ -1,0 +1,135 @@
+/* Base styles */
+body {
+  background-color: #f5f8fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+main {
+  font-family: "Segoe UI", sans-serif;
+}
+
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  padding-top: 3rem;
+}
+
+/* Profile Header */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.profile-header h2 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #007bff;
+}
+
+.profile-header .info {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Buttons */
+#edit-profile,
+#edit-goals {
+  background-color: #007bff;
+  color: white;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#edit-profile:hover,
+#edit-goals:hover {
+  background-color: #0056b3;
+}
+
+/* Health Info Section */
+.section.health-info {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.section.health-info div {
+  flex: 1 1 30%;
+  margin-bottom: 0.5rem;
+}
+
+/* Stat Cards */
+.cards {
+  all: revert;
+  /*
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  */
+  gap: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.card {
+  background: #ffffff;
+  padding: 1.2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+}
+
+.card .label {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.card .value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Goals Section */
+.section {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+}
+
+.section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goals-list {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1rem;
+}
+
+.goals-list li {
+  padding: 0.3rem 0;
+}
