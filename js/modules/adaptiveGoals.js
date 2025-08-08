@@ -29,7 +29,7 @@ export async function adjustGoals(goalData) {
       newValue = Math.round(newValue * 1.05);
       adjustment = 0.05;
     } else {
-      newValue = Math.round(goalValue * 0.95);
+      newValue = Math.round(newValue * 0.95);
       adjustment = -0.05;
     } 
 
