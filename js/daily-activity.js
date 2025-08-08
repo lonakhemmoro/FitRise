@@ -110,21 +110,44 @@ function createCards(aside, goalValue, dailyActsArr) {
 }
 
 function getTodaysDaily(goalValue, dailyActsArr) {
-  const currDate = new Date().getDate();
+  const today = new Date();
+  dailyIndex = -1; // reset index
+
   for (let i = 0; i < dailyActsArr.length; i++) {
-    const dailyDate = stringToDate(dailyActsArr[i].date).getDate();
-    if (currDate === dailyDate) {
+    const dailyDate = stringToDate(dailyActsArr[i].date);
+    if (
+      dailyDate.getFullYear() === today.getFullYear() &&
+      dailyDate.getMonth() === today.getMonth() &&
+      dailyDate.getDate() === today.getDate()
+    ) {
       dailyIndex = i;
       break;
     }
   }
 
-  const todaysValue = dailyIndex > -1 ? dailyActsArr[dailyIndex].value : 0;
+  // If no entry found, create a new one for today
+  if (dailyIndex === -1) {
+    const newDateStr = today.toISOString().split('T')[0];
+    dailyActsArr.push({ date: newDateStr, value: 0 });
+
+    // Add a new card to the UI
+    const aside = document.querySelector("aside");
+    const month = monthName(today.getMonth());
+    const day = today.getDate();
+    aside.innerHTML += `
+      <div class="daily-card">
+        <p>${month} ${day}</p>
+        <p>0 / ${numberWithCommas(goalValue)} ${valueUnit}</p>
+      </div>
+    `;
+
+    dailyIndex = dailyActsArr.length - 1;
+  }
+
+  const todaysValue = dailyActsArr[dailyIndex].value;
 
   const todaysValueTextArea = document.getElementById("todays-value");
-  todaysValueTextArea.innerText = `${todaysValue} / ${numberWithCommas(
-    goalValue
-  )} ${valueUnit}`;
+  todaysValueTextArea.innerText = `${todaysValue} / ${numberWithCommas(goalValue)} ${valueUnit}`;
   todaysValueTextArea.classList.remove("skeleton-text");
 }
 
@@ -177,8 +200,16 @@ function hopefulUpdate(offsetValue) {
   const newString = `${numberWithCommas(dailyValue)} / ${goalValue}`;
   todaysValueTag.innerText = newString;
 
-  let todaysCard = document.querySelectorAll(".daily-card")[dailyIndex];
-  todaysCard.children[1].innerText = newString;
+  console.log(document.querySelectorAll('.daily-card'));
+  console.log('dailyIndex:', dailyIndex);
+
+  let cards = document.querySelectorAll(".daily-card");
+if (cards[dailyIndex]) {
+  cards[dailyIndex].children[1].innerText = newString;
+} else {
+  console.warn('No daily-card found for index', dailyIndex);
+}
+
 }
 //#endregion
 
