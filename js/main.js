@@ -1,6 +1,8 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Load header
-  fetch("header.html")
+import { adjustGoals } from './modules/adaptiveGoals.js';
+
+document.addEventListener("DOMContentLoaded", async function () {
+  // Load the header content
+  await fetch("header.html")
     .then((response) => response.text())
     .then((data) => {
       document.getElementById("header-placeholder").innerHTML = data;
@@ -16,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// DOM elements
 const getStartedBtn = document.querySelector(".hero button");
 const pointsDisplay = document.getElementById("points");
 const badgesDisplay = document.getElementById("badges");
