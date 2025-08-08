@@ -12,28 +12,23 @@ export async function adjustGoals(goalData) {
       .from('daily_activities')
       .select('*')
       .eq('goal_id', goalID)
-      .gt('date', lastAdjusted)
-      .order('date', { ascending: false })
+      .eq('date', lastAdjusted)
+  
       
     if (actError) throw actError;
+    if (!activities || activities.length === 0) return;
 
-    // If less than 3 activity records since last adjustment, skip adjustment
-    if (activities.length < 3) return;
+    const yesterday = activities[0];
+    const yesterdaySuccess = yesterday.value >= yesterday.adjusted_goal_value;
+    
 
-    let successDays = 0;
-    for (const record of activities) {
-      if (record.value >= record.adjusted_goal_value) {
-        successDays++;
-      }
-    }
-
-    let newValue = goalValue;
+    let newValue = yesterday.adjusted_goal_value;
     let adjustment = 0;
 
-    if (successDays >= 3) {
-      newValue = Math.round(goalValue * 1.05);
+    if (yesterdaySuccess) {
+      newValue = Math.round(newValue * 1.05);
       adjustment = 0.05;
-    } else if (successDays == 0) {
+    } else {
       newValue = Math.round(goalValue * 0.95);
       adjustment = -0.05;
     } 
@@ -50,14 +45,15 @@ export async function adjustGoals(goalData) {
 
       if (goalUpdateError) throw goalUpdateError;
 
-      // Update daily_activities for today and future
-      const { error: dailyUpdateError } = await supabase
+       const { error: dailyUpdateError } = await supabase
         .from('daily_activities')
         .update({ adjusted_goal_value: newValue })
         .eq('goal_id', goalID)
         .gte('date', todayDate);
 
       if (dailyUpdateError) throw dailyUpdateError;
+
+      
     }
   } catch (error) {
     console.error("Goal adjustment failed:", error);
