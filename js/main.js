@@ -1,5 +1,3 @@
-import { adjustGoals } from './modules/adaptiveGoals.js';
-
 document.addEventListener("DOMContentLoaded", async function () {
   // Load the header content
   await fetch("header.html")
