@@ -1,145 +1,149 @@
 /* styles for the entire application */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #F8F9FA;
-    color: #333;
-    padding-top: 80px;
-  }
-  
-  /* Header */
-  header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background-color: #007BFF;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 40px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  #logoutBtn {
-    background-color: #dc3545;
-    color: white;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-left: 20px;
-  }
-  #logoutBtn:hover {
-    background-color: #c82333;
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-  }
-  
-  .logo img {
-    height: 60px;           
-    width: auto;
-    margin-right: 10px;
-  }
-  
-  /* Navigation */
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 24px;
-  }
-  
-  nav a {
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-  }
-  
-  nav a:hover {
-    color: #D9EFFF;
-  }
-  
-  /* Hero Section */
-  .hero {
-    text-align: center;
-    padding: 60px 20px 40px;
-  }
-  
-  .hero h1 {
-    font-size: 32px;
-    font-weight: bold;
-    color: #212529;
-    margin-bottom: 10px;
-  }
-  
-  .hero p {
-    font-size: 16px;
-    margin-bottom: 20px;
-    color: #555;
-  }
-  
-  .hero button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: white;
-    color: #007BFF;
-    border: 2px solid #007BFF;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.3s ease;
-  }
-  
-  .hero button:hover {
-    background-color: #007BFF;
-    color: white;
-  }
-  
-  /* Dashboard cards */
-  .dashboard {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 30px;
-    padding: 40px 20px;
-  }
-  
-  .card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    transition: 0.2s ease;
-  }
-  
-  .card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  }
-  
-  .card h2 {
-    margin-bottom: 15px;
-    color: #007BFF;
-  }
-  
-  .card p {
-    margin-bottom: 8px;
-  }
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  padding-top: 80px;
+}
 
-  /* === Rewards Page Styles === */
+/* Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #007bff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+#logoutBtn {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 20px;
+}
+#logoutBtn:hover {
+  background-color: #c82333;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.logo img {
+  height: 60px;
+  width: auto;
+  margin-right: 10px;
+}
+
+/* Navigation */
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+}
+
+nav a:hover {
+  color: #d9efff;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+}
+
+.hero h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #212529;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.hero button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: white;
+  color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.hero button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Dashboard cards */
+.dashboard {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card h2 {
+  margin-bottom: 15px;
+  color: #007bff;
+}
+
+.card p {
+  margin-bottom: 8px;
+}
+
+.card li {
+  list-style: none;
+}
+
+/* === Rewards Page Styles === */
 .rewards-section {
   padding: 40px 20px;
   text-align: center;
@@ -147,7 +151,7 @@
 
 .rewards-section h2 {
   font-size: 28px;
-  color: #007BFF;
+  color: #007bff;
   margin-bottom: 10px;
 }
 
@@ -174,38 +178,45 @@
 .rewards-section th {
   background-color: #f1f1f1;
   color: #333;
-}.rewards-table td {
+}
+.rewards-table td {
   padding: 8px 16px;
-}.rewards-table td:last-child {
+}
+.rewards-table td:last-child {
   white-space: nowrap;
 }
-  
+
 .badges-earned {
   display: flex;
   justify-content: center;
-  margin: 100px 0;    
+  margin: 100px 0;
 }
 
 .badge-image {
-  width: 320px;      
+  width: 320px;
   height: auto;
 }
 
-  /* Graph */
-  .graph {
-    background: #EAFBF0;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-    color: #28A745;
-    margin-top: 15px;
-    border: 1px dashed #28A745;
-    border-radius: 8px;
-  }
+.badge.skeleton {
+  width: 320px;
+  height: 300px;
+}
 
-  progress {
+/* Graph */
+.graph {
+  background: #eafbf0;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  color: #28a745;
+  margin-top: 15px;
+  border: 1px dashed #28a745;
+  border-radius: 8px;
+}
+
+progress {
   width: 100%;
   height: 20px;
   margin: 10px 0;
@@ -217,19 +228,18 @@ progress::-webkit-progress-bar {
 }
 
 progress::-webkit-progress-value {
-  background-color: #007BFF;
+  background-color: #007bff;
   border-radius: 10px;
 }
 
-  
-  /* Footer */
-  footer {
-    text-align: center;
-    margin-top: 60px;
-    padding: 20px;
-    color: #777;
-    background-color: #f1f1f1;
-  }
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 60px;
+  padding: 20px;
+  color: #777;
+  background-color: #f1f1f1;
+}
 
 /* profile css */
 .container {
@@ -237,7 +247,7 @@ progress::-webkit-progress-value {
   margin: 2rem auto;
   background: #fff;
   padding: 2rem;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
 .profile-header {
@@ -325,5 +335,72 @@ progress::-webkit-progress-value {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
+}
+
+/* Hamburger button styles */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  margin-right: auto;
+  color: white;
+}
+
+/* Responsive nav */
+@media (max-width: 700px) {
+  header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 10px;
+    height: auto;
+    position: relative;
+    justify-content:left;
+  }
+  .nav-toggle {
+    display: block;
+    margin-right: 8px;
+    margin-left: 0;
+    order: 1;
+  }
+  .logo {
+    order: 2;
+    margin-left: 0;
+    font-size: 18px;
+  }
+  #logoutBtn {
+    margin-left: auto;
+    order: 4;
+  }
+  .main-nav ul {
+    display: none;
+    flex-direction: column;
+    background-color: #007BFF;
+    position: absolute;
+    top: 30px;
+    left: -10px;
+    right: 0;
+    width: 180px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 100;
+    margin: 0;
+    padding: 0;
+  }
+  .main-nav.open ul {
+    display: flex;
+    padding: 10px 0;
+  }
+  .main-nav {
+    position: relative;
+  }
+  .main-nav ul li a {
+    padding: 12px 16px;
+    text-decoration: none;
+  }
+  body {
+    padding-top: 0;
+  }
 }
 /* end of profile css */
