@@ -23,7 +23,7 @@ init();
 async function init() {
   addValueBtn.disabled = true;
   goalStartRecommendedBtn.disabled = true;
-  goalStartManualBtn.disabledd = true;
+  goalStartManualBtn.disabled = true;
 
   //Check if logged in
   const { data, error } = await supabase.auth.getUser();
