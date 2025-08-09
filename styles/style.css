@@ -28,9 +28,7 @@ header {
   z-index: 1000;
 }
 
-#logoutBtn {
-  background-color: #dc3545;
-  color: white;
+.header-btn {
   padding: 8px 14px;
   border: none;
   border-radius: 6px;
@@ -38,8 +36,35 @@ header {
   font-weight: bold;
   margin-left: 20px;
 }
+
+#logoutBtn {
+  background-color: #dc3545;
+  color: white;
+}
 #logoutBtn:hover {
   background-color: #c82333;
+}
+
+#signup-btn {
+  background-color: #f8a00a;
+  color: #000;
+  margin: revert;
+}
+#signup-btn:hover {
+  background-color: #db5b00;
+  color: #fff;
+}
+
+#login-btn {
+  background-color: #fff;
+  color: #007bff;
+  border: 1px solid #007bff;
+  margin: revert;
+}
+#login-btn:hover {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #fff;
 }
 
 .logo {
@@ -301,6 +326,10 @@ footer {
     font-size: 18px;
   }
   #logoutBtn {
+    margin-left: auto;
+    order: 4;
+  }
+  #login-holder {
     margin-left: auto;
     order: 4;
   }
