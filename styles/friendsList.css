@@ -188,6 +188,7 @@ button.pb-highlight {
 @media (width <= 700px) {
   .friend-nav {
     height: 45px;
+    margin-top: revert;
   }
   .friend-nav ul {
     gap: 0px;

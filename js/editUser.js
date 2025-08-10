@@ -27,8 +27,7 @@ async function init() {
   //Check if logged in and get userID
   const { data, error } = await supabase.auth.getUser();
   if (!data.user) {
-    //Off for review purposes and testing
-    //window.location.href = "profile.html";
+    window.location.href = "login.html";
     return;
   }
   if (error) {

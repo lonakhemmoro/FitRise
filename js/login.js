@@ -9,7 +9,13 @@ loginButton.onclick = (evnt) => login(evnt);
 
 init();
 async function init() {
-  //TODO: Check if the user is already logged-in. If so, redirect them
+  //Check if the user is already logged in, if so redirect them
+  const { data, error } = await supabase.auth.getUser();
+  if (data.user) {
+    window.location.href = "index.html";
+    return;
+  }
+  //If error, ignore it
 }
 
 async function login(evnt) {

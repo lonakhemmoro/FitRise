@@ -28,7 +28,7 @@ async function init() {
   //Check if logged in
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) {
-    //TODO: Redirect to the login page
+    window.location.href = "login.html";
     return;
   }
   userID = data.user.id;
