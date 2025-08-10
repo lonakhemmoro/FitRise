@@ -59,8 +59,3 @@ export async function adjustGoals(goalData) {
     console.error("Goal adjustment failed:", error);
   }
 }
-
-
-   
-
-
