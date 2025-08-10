@@ -72,10 +72,22 @@ async function init() {
   //Give logout button functionality
   document.getElementById("logoutBtn").onclick = () => logout();
 
+  //Check if we're on the home page
+  const path = window.location.pathname;
+  const pathArray = window.location.pathname.split("/");
+  let isHomePage = false;
+  if (path.includes("FitRise")) {
+    //Means we're in the deployed version of the site
+    isHomePage = pathArray[2] === "" || pathArray[2] === "index.html";
+  } else {
+    //Means we're in the local version of the site
+    isHomePage = pathArray[1] === "" || pathArray[1] === "index.html";
+  }
+
   // Check if the user is logged in
   // Every page uses main.js but every page also separately checks if the user is logged in
   // So only run if we're on the home page
-  if (window.location.pathname.includes("index.html")) {
+  if (isHomePage) {
     //Give getStarted button functionality
     getStartedBtn.onclick = () => getStarted();
 
