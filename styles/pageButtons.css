@@ -1,0 +1,39 @@
+.page-buttons {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 4px;
+  padding-bottom: 15px;
+}
+
+.page-buttons * {
+  display: inline;
+  user-select: none;
+}
+
+.page-buttons button {
+  --square: 30px;
+  width: var(--square);
+  height: var(--square);
+
+  font-size: larger;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+
+  background-color: transparent;
+  border: 1px solid var(--grey);
+  border-radius: 8px;
+
+  transition: background-color 0.1s ease-in;
+}
+
+.page-buttons button:not(.pb-highlight):hover {
+  background-color: rgb(135, 138, 143);
+}
+
+button.pb-highlight {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}

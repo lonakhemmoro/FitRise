@@ -1,0 +1,80 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit User - FitRise</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/editUser.css" />
+    <link rel="stylesheet" href="styles/modal.css" />
+    <script src="./js/main.js"></script>
+    <script src="./js/editUser.js" type="module" defer></script>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+
+    <main>
+      <h2>Edit User</h2>
+
+      <form>
+        <div class="update-field">
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" name="first-name" />
+        </div>
+        <div class="update-field">
+          <label for="last-name">Last Name</label>
+          <input type="text" id="last-name" name="last-name" />
+        </div>
+
+        <div class="update-field">
+          <label for="height">Height</label>
+          <div id="height">
+            <div id="height-section">
+              <input
+                type="number"
+                id="height-feet"
+                name="height-feet"
+                placeholder="Feet"
+                min="1"
+              />
+              <input
+                type="number"
+                id="height-inch"
+                name="height-inch"
+                placeholder="Inches"
+                min="1"
+              />
+            </div>
+            <div>
+              <button type="button" id="height-feet-btn" disabled>ft</button>
+              <button type="button" id="height-cm-btn">cm</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="update-field">
+          <label for="weight-num">Weight</label>
+          <div id="weight">
+            <div id="weight-section">
+              <input
+                type="number"
+                id="weight-num"
+                name="weight-num"
+                placeholder="Pounds(lbs)"
+                min="1"
+              />
+            </div>
+            <div>
+              <button type="button" id="weight-lb-btn" disabled>lb</button>
+              <button type="button" id="weight-kg-btn">kg</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-holder">
+          <button type="button" id="cancel-btn">Cancel</button>
+          <button type="submit" id="submit-btn">Update Profile</button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

@@ -122,8 +122,7 @@ function createFriendCard(userData, isOutgoingRequest) {
   const id = isOutgoingRequest ? userData.receiver_id : userData.user_id;
   const { username, first_name, last_name } = userData.users;
 
-  //TODO: place holder url until the friend profile page gets made
-  const link = "index.html?username=" + username;
+  const link = "profile.html?username=" + username;
 
   //Account for if the user's first and last names are NULL or ""
   let fullName, style, title;

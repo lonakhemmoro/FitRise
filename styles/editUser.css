@@ -1,0 +1,164 @@
+main {
+  padding: 10px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+/*Fields*/
+
+.update-field label {
+  display: block;
+}
+
+.update-field input {
+  margin-left: 16px;
+
+  display: block;
+  width: 65%;
+  margin: 4px 0 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.update-field button {
+  display: inline;
+  margin: 4px 0 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  width: 40px;
+  transition: background-color 0.15s ease-in;
+}
+
+.update-field button:hover:enabled {
+  background-color: #c1c1c1;
+}
+
+/*Height Section*/
+#height {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#height > div {
+  display: flex;
+  flex-direction: row;
+}
+
+#height input {
+  width: 100%;
+}
+
+/*Weight Section*/
+#weight {
+  display: flex;
+  gap: 10px;
+}
+
+#weight-section + div {
+  display: flex;
+  flex-direction: row;
+}
+
+#weight input {
+  width: 100%;
+}
+
+/*Cancel and Submit buttons*/
+.btn-holder {
+  margin-top: 10px;
+}
+
+#cancel-btn,
+#submit-btn {
+  width: fit-content;
+  padding: 10px;
+
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+
+  font-weight: bold;
+  font-size: 1rem;
+
+  transition: background-color 0.1s ease-in;
+}
+
+#cancel-btn {
+  background-color: transparent;
+  color: #007bff;
+}
+
+#cancel-btn:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+#submit-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+#submit-btn:hover {
+  background-color: #004794;
+}
+
+#cancel-btn:disabled,
+#submit-btn:disabled {
+  background-color: #bbbbbb;
+  color: #989898;
+}
+
+/* Error Related */
+input.err {
+  border-color: #c70303;
+  border-width: 2px;
+}
+
+p.err {
+  color: #c70303;
+  margin: -6px 0px 0px 0px;
+}
+
+p.err {
+  margin: -6px 0px 0px 0px;
+  text-align: justify;
+}
+
+p.err::before {
+  content: "* ";
+}
+
+/*Responsive*/
+/* CSS specific to iOS devices */
+@supports (-webkit-touch-callout: none) {
+  select {
+    /*
+    -webkit-appearance: auto;
+    */
+    height: 35px;
+    color: black;
+  }
+
+  button {
+    color: #fff;
+    background-color: #007bff;
+  }
+
+  button:disabled {
+    border-color: #e8e8e8;
+    background-color: #f8f9fa;
+    color: #858585;
+  }
+}
+
+@media (width <= 700px) {
+  .update-field input {
+    width: 100%;
+  }
+}
