@@ -1,4 +1,3 @@
-import createHeader from "./modules/createHeader.js";
 import {
   createPageSelector,
   deletePageButtons,
@@ -12,8 +11,6 @@ const contentHolder = document.querySelector(".content");
 let searchValue = "";
 const searchBtn = document.querySelector("form button");
 searchBtn.onclick = (evnt) => newUserSearch(evnt);
-
-createHeader();
 
 async function newUserSearch(evnt) {
   evnt.preventDefault();

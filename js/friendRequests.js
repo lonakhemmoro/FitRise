@@ -1,4 +1,3 @@
-import createHeader from "./modules/createHeader.js";
 import {
   createPageSelector,
   setPageClick,
@@ -18,10 +17,13 @@ const perPage = 6;
 //Page Count for outgoing requests
 let pageCountOut = 0; // = Math.ceil(oc / perPage);
 
-createHeader();
 init();
 async function init() {
   const { data: dataS, error: errorS } = await supabase.auth.getUser();
+  if (!dataS.user) {
+    window.location.href = "login.html";
+    return;
+  }
   userID = dataS.user.id;
   if (errorS) {
     console.log("Init Error");

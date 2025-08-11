@@ -10,8 +10,7 @@ async function init() {
   const { data, error } = await supabase.auth.getUser();
   if (!data.user) {
     //Means you aren't logged in
-    console.log("not logged in");
-    //TODO: figure out what to do if they're not logged in
+    window.location.href = "login.html";
     return;
   }
 

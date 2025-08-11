@@ -1,4 +1,3 @@
-import createHeader from "./modules/createHeader.js";
 import {
   createPageSelector,
   setPageClick,
@@ -11,13 +10,13 @@ let totalCount = 0; //Total number of friends
 
 const contentHolder = document.querySelector(".content");
 
-createHeader();
 init();
-
 async function init() {
-  //TODO: Decide what to do if user isn't logged in
-
   const { data: dataI, error: errorI } = await supabase.auth.getUser();
+  if (!dataI.user) {
+    window.location.href = "login.html";
+    return;
+  }
   userID = dataI.user.id;
   if (errorI) {
     console.log("Init Error");
